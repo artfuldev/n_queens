@@ -98,14 +98,4 @@ def main():
     solve(n)
 
 
-# board = [[0 for i in range(4)] for j in range(4)]
-# board[0][2] = 1
-# board[1][0] = 1
-# board[2][3] = 1
-# board[3][1] = 1
-
-# print(is_valid_row(board, 0))
-# print(is_valid_col(board, 0))
-# print(is_valid_diag(board, 0, 2))
-# print(is_valid_board(board))
 solve(8)
