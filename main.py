@@ -63,52 +63,29 @@ def is_valid_board(board):
                     return False
     return True
 
+def is_safe(board, row, col):
+    place_queen(board, row, col)
+    safe = is_valid_board(board)
+    remove_queen(board, row, col)
+    return safe
+
+def solve_row(board, row):
+    board_size = len(board)
+    if row >= board_size:
+        return True
+    col = 0
+    while col < board_size:
+        if is_safe(board, row, col):
+            place_queen(board, row, col)
+            if solve_row(board, row + 1):
+                return True
+            remove_queen(board, row, col)
+        col += 1
+    return False
 
 def solve(board_size):
     board = [[0 for i in range(board_size)] for j in range(board_size)]
-
-    last_col_indices = []
-    last_row_index = 0
-    valid_col_indices = {}
-    visited_col_indices = {}
-    row_index = 0
-    col_index = 0
-    backtracked_row_indices = []
-
-    for i in range(board_size):
-        valid_col_indices[i] = []
-        visited_col_indices[i] = []
-
-    while row_index < board_size:
-        while col_index < board_size:
-            print(f"row: {row_index} col: {col_index}")
-            place_queen(board, row_index, col_index)
-            if is_valid_board(board):
-                print("valid")
-                valid_col_indices[row_index].append(col_index)
-                last_row_index = row_index
-                last_col_indices.append(col_index)
-                row_index += 1
-                col_index = 0
-            else:
-                print("invalid")
-                remove_queen(board, row_index, col_index)
-                col_index += 1
-                if col_index == board_size:
-                    remove_queen(board, last_row_index, last_col_indices[-1])
-                    col_index = last_col_indices.pop() + 1
-                    
-                    while last_row_index in backtracked_row_indices:
-                        last_row_index -= 1
-                        
-                    row_index = last_row_index
-                    col_index = last_col_indices[row_index] + 1
-
-                    while col_index >= board_size:
-                        row_index -= 1
-                        col_index = last_col_indices[row_index] + 1
-                    backtracked_row_indices.append(last_row_index)
-
+    solve_row(board, 0)
     print("The solved board is:")
     print_board(board)
 
