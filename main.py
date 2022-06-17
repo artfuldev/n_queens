@@ -79,13 +79,6 @@ def solve_row(board, row):
     return False
 
 
-def position(row):
-    for i in range(len(row)):
-        if row[i] == 1:
-            return i
-    return -1
-
-
 def solve(board_size):
     board = [[0 for i in range(board_size)] for j in range(board_size)]
     solve_row(board, 0)
