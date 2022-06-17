@@ -63,11 +63,6 @@ def is_valid_board(board):
                     return False
     return True
 
-def is_safe(board, row, col):
-    place_queen(board, row, col)
-    safe = is_valid_board(board)
-    remove_queen(board, row, col)
-    return safe
 
 def solve_row(board, row):
     board_size = len(board)
@@ -75,13 +70,21 @@ def solve_row(board, row):
         return True
     col = 0
     while col < board_size:
-        if is_safe(board, row, col):
-            place_queen(board, row, col)
+        place_queen(board, row, col)
+        if is_valid_board(board):
             if solve_row(board, row + 1):
                 return True
-            remove_queen(board, row, col)
+        remove_queen(board, row, col)
         col += 1
     return False
+
+
+def position(row):
+    for i in range(len(row)):
+        if row[i] == 1:
+            return i
+    return -1
+
 
 def solve(board_size):
     board = [[0 for i in range(board_size)] for j in range(board_size)]
