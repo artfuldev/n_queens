@@ -13,9 +13,26 @@ def place_queen(board, row, col):
     board[row][col] = 1
 
 
-def print_board(board):
+def sprint_cell(cell):
+    return "Q" if cell == 1 else "_"
+
+
+def sprint_row(row):
+    row_sprint = []
+    for cell in row:
+        row_sprint.append(sprint_cell(cell))
+    return " ".join(row_sprint)
+
+
+def sprint_board(board):
+    board_sprint = []
     for row in board:
-        print(row)
+        board_sprint.append(sprint_row(row))
+    return "\n".join(board_sprint)
+
+
+def print_board(board):
+    print(sprint_board(board))
 
 def print_board_as_string(board):
     string = ""
