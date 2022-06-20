@@ -1,9 +1,9 @@
 # board of size n x n
 # n = number of queens and also size of board
 
-
+import sys
 from random import choice
-
+from timeit import default_timer
 
 def remove_queen(board, row, col):
     board[row][col] = 0
@@ -16,6 +16,13 @@ def place_queen(board, row, col):
 def print_board(board):
     for row in board:
         print(row)
+
+def print_board_as_string(board):
+    string = ""
+    for row in board:
+        string += str(row)
+        string += "\n"
+    return string    
 
 
 def is_valid_row(board, row):
@@ -90,5 +97,8 @@ def main():
     n = int(input("Enter the size of the board: "))
     solve(n)
 
-
-solve(8)
+for size in range(4, 101):
+    tic = default_timer()
+    solve(size)
+    toc = default_timer()
+    print("Time taken to solve {}x{} board: {}".format(size, size, toc - tic))
