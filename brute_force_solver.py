@@ -1,4 +1,3 @@
-from timeit import default_timer
 from board import create, place_queen, remove_queen, is_valid_board
 
 
