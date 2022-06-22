@@ -35,7 +35,7 @@ def sprint_board(board):
 
 
 def has_collision(board, x, y):
-    if x == y or board[x] == -1 or board[y] == -1:
+    if board[x] == -1 or board[y] == -1:
         return False
     if board[x] == board[y]:
         return True
@@ -48,7 +48,7 @@ def collisions(board):
     collisions = 0
     for x in range(len(board)):
         for y in range(len(board)):
-            if has_collision(board, x, y):
+            if x != y and has_collision(board, x, y):
                 collisions += 1
     return collisions
 
