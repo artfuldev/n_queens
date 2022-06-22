@@ -1,9 +1,12 @@
 from copy import copy
 
 
+NO_QUEEN_PLACED = -1
+
+
 def remove_queen(board, row):
     new_board = copy(board)
-    new_board[row] = -1
+    new_board[row] = NO_QUEEN_PLACED
     return new_board
 
 
@@ -24,7 +27,7 @@ def sprint_board(board):
 
 
 def has_collision(board, x, y):
-    if board[x] == -1 or board[y] == -1:
+    if board[x] == NO_QUEEN_PLACED or board[y] == NO_QUEEN_PLACED:
         return False
     if board[x] == board[y]:
         return True
@@ -47,5 +50,5 @@ def is_valid_board(board):
 
 
 def create(board_size):
-    board = [-1 for i in range(board_size)]
+    board = [NO_QUEEN_PLACED for i in range(board_size)]
     return board
