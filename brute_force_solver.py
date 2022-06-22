@@ -1,6 +1,7 @@
 from timeit import default_timer
 from board import create, place_queen, remove_queen, is_valid_board
 
+
 def solve_row(board, row):
     board_size = len(board)
     solutions = []
@@ -16,6 +17,7 @@ def solve_row(board, row):
         board = remove_queen(board, row, col)
         col += 1
     return solutions
+
 
 def solve_row_first(board, row):
     board_size = len(board)
@@ -33,8 +35,10 @@ def solve_row_first(board, row):
         col += 1
     return solution
 
+
 def solve(board_size):
     return solve_row(create(board_size), 0)
+
 
 def solve_first(board_size):
     return solve_row_first(create(board_size), 0)

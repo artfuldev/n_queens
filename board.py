@@ -1,5 +1,6 @@
 from copy import copy
 
+
 def remove_queen(board, row):
     new_board = copy(board)
     new_board[row] = -1
