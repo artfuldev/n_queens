@@ -5,12 +5,6 @@ def queen_at(board, row):
     return board[row]
 
 
-def remove_queen(board, row):
-    new_board = copy(board)
-    new_board[row] = None
-    return new_board
-
-
 def place_queen(board, row, col):
     new_board = copy(board)
     new_board[row] = col

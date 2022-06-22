@@ -13,7 +13,6 @@ def solve_row(board, row):
         if is_valid_board(board):
             for solution in solve_row(board, row + 1):
                 solutions.append(solution)
-        board = remove_queen(board, row, col)
         col += 1
     return solutions
 
