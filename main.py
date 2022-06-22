@@ -4,13 +4,21 @@
 import sys
 from random import choice
 from timeit import default_timer
+from copy import deepcopy
+
+
+def set_value(board, row, col, value):
+    new_board = deepcopy(board)
+    new_board[row][col] = value
+    return new_board
+
 
 def remove_queen(board, row, col):
-    board[row][col] = 0
+    return set_value(board, row, col, 0)
 
 
 def place_queen(board, row, col):
-    board[row][col] = 1
+    return set_value(board, row, col, 1)
 
 
 def sprint_cell(cell):
@@ -33,13 +41,15 @@ def sprint_board(board):
 
 def print_board(board):
     print(sprint_board(board))
+    print('')
+
 
 def print_board_as_string(board):
     string = ""
     for row in board:
         string += str(row)
         string += "\n"
-    return string    
+    return string
 
 
 def is_valid_row(board, row):
@@ -91,31 +101,36 @@ def is_valid_board(board):
 def solve_row(board, row):
     board_size = len(board)
     if row >= board_size:
-        return True
+        return board
     col = 0
     while col < board_size:
-        place_queen(board, row, col)
+        board = place_queen(board, row, col)
         if is_valid_board(board):
-            if solve_row(board, row + 1):
-                return True
-        remove_queen(board, row, col)
+            solution = solve_row(board, row + 1)
+            if (solution is not None):
+                return solution
+        board = remove_queen(board, row, col)
         col += 1
-    return False
+    return None
 
 
 def solve(board_size):
     board = [[0 for i in range(board_size)] for j in range(board_size)]
-    solve_row(board, 0)
+    solution = solve_row(board, 0)
     print("The solved board is:")
-    print_board(board)
+    print_board(solution)
+    return solution
 
 
 def main():
     n = int(input("Enter the size of the board: "))
     solve(n)
 
-for size in range(4, 101):
-    tic = default_timer()
-    solve(size)
-    toc = default_timer()
-    print("Time taken to solve {}x{} board: {}".format(size, size, toc - tic))
+
+# for size in range(8, 9):
+#     tic = default_timer()
+#     solve(size)
+#     toc = default_timer()
+#     print("Time taken to solve {}x{} board: {}".format(size, size, toc - tic))
+
+solve(8)
