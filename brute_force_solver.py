@@ -29,7 +29,7 @@ def solve_row_first(board, row):
             solution = solve_row_first(board, row + 1)
             if solution is not None:
                 return solution
-        board = remove_queen(board, row, col)
+        board = remove_queen(board, row)
         col += 1
     return solution
 

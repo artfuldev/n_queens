@@ -1,24 +1,15 @@
-# board of size n x n
-# n = number of queens and also size of board
+from copy import copy
 
-import sys
-from random import choice
-from timeit import default_timer
-from copy import deepcopy
-
-
-def set_value(board, row, col, value):
-    new_board = deepcopy(board)
-    new_board[row][col] = value
+def remove_queen(board, row):
+    new_board = copy(board)
+    new_board[row] = -1
     return new_board
 
 
-def remove_queen(board, row, col):
-    return set_value(board, row, col, 0)
-
-
 def place_queen(board, row, col):
-    return set_value(board, row, col, 1)
+    new_board = copy(board)
+    new_board[row] = col
+    return new_board
 
 
 def sprint_cell(cell):
@@ -35,60 +26,36 @@ def sprint_row(row):
 def sprint_board(board):
     board_sprint = []
     for row in board:
-        board_sprint.append(sprint_row(row))
-    return "\n".join(board_sprint)
+        row_sprint = []
+        for i in range(len(board)):
+            row_sprint.append("Q" if i == row else "_")
+        board_sprint.append(" ".join(row_sprint))
+    return "\n".join(board_sprint) + "\n"
 
 
-def print_board(board):
-    print(sprint_board(board))
-    print('')
+def has_collision(board, x, y):
+    if x == y or board[x] == -1 or board[y] == -1:
+        return False
+    if board[x] == board[y]:
+        return True
+    difference = x - y
+    board_difference = board[x] - board[y]
+    return difference == board_difference or difference == -board_difference
 
 
-def is_valid_row(board, row):
-    count = 0
-    for col in range(len(board)):
-        count += board[row][col]
-        if count > 1:
-            return False
-    return True
-
-
-def is_valid_col(board, col):
-    count = 0
-    for row in range(len(board)):
-        count += board[row][col]
-        if count > 1:
-            return False
-    return True
-
-
-def is_valid_diag(board, row, col):
-    count_left = 0
-    count_right = 0
-    for i in range(len(board)):
-        if row + i < len(board) and col + i < len(board):
-            count_left += board[row + i][col + i]
-            if count_left > 1:
-                return False
-        if row - i >= 0 and col + i < len(board):
-            count_right += board[row - i][col + i]
-            if count_right > 1:
-                return False
-    return True
+def collisions(board):
+    collisions = 0
+    for x in range(len(board)):
+        for y in range(len(board)):
+            if has_collision(board, x, y):
+                collisions += 1
+    return collisions
 
 
 def is_valid_board(board):
-    for row in range(len(board)):
-        for col in range(len(board)):
-            if board[row][col] == 1:
-                if (
-                    not is_valid_row(board, row)
-                    or not is_valid_col(board, col)
-                    or not is_valid_diag(board, row, col)
-                ):
-                    return False
-    return True
+    return collisions(board) == 0
+
 
 def create(board_size):
-    board = [[0 for i in range(board_size)] for j in range(board_size)]
+    board = [-1 for i in range(board_size)]
     return board
