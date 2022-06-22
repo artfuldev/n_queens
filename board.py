@@ -1,4 +1,5 @@
 from copy import copy
+from random import shuffle
 
 
 def queen_at(board, row):
@@ -51,6 +52,14 @@ def is_valid_board(board):
     return collisions(board) == 0
 
 
-def create(board_size):
-    board = [None for i in range(board_size)]
+def create(size):
+    board = [None for row in range(size)]
+    return board
+
+def create_filled(size):
+    board = [None for row in range(size)]
+    positions = list(range(size))
+    shuffle(positions)
+    for row in range(size):
+        board = place_queen(board, row, positions[row])
     return board
