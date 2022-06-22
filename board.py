@@ -13,17 +13,6 @@ def place_queen(board, row, col):
     return new_board
 
 
-def sprint_cell(cell):
-    return "Q" if cell == 1 else "_"
-
-
-def sprint_row(row):
-    row_sprint = []
-    for cell in row:
-        row_sprint.append(sprint_cell(cell))
-    return " ".join(row_sprint)
-
-
 def sprint_board(board):
     board_sprint = []
     for row in board:
