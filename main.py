@@ -100,26 +100,25 @@ def is_valid_board(board):
 
 def solve_row(board, row):
     board_size = len(board)
+    solutions = []
     if row >= board_size:
-        return board
+        solutions.append(board)
+        return solutions
     col = 0
     while col < board_size:
         board = place_queen(board, row, col)
         if is_valid_board(board):
-            solution = solve_row(board, row + 1)
-            if (solution is not None):
-                return solution
+            for solution in solve_row(board, row + 1):
+                solutions.append(solution)
         board = remove_queen(board, row, col)
         col += 1
-    return None
+    return solutions
 
 
 def solve(board_size):
     board = [[0 for i in range(board_size)] for j in range(board_size)]
-    solution = solve_row(board, 0)
-    print("The solved board is:")
-    print_board(solution)
-    return solution
+    solutions = solve_row(board, 0)
+    return solutions
 
 
 def main():
@@ -127,10 +126,8 @@ def main():
     solve(n)
 
 
-# for size in range(8, 9):
-#     tic = default_timer()
-#     solve(size)
-#     toc = default_timer()
-#     print("Time taken to solve {}x{} board: {}".format(size, size, toc - tic))
-
-solve(8)
+for size in range(4, 101):
+    tic = default_timer()
+    solutions = len(solve(size))
+    toc = default_timer()
+    print("{} solutions for {}x{} board found in {:0.3f}s".format(solutions, size, size, toc - tic))
