@@ -17,19 +17,19 @@ def place_queen(board, row, col):
     return new_board
 
 
-def sprint_row(size, row):
-    row_sprint = []
+def stringify_row(size, row):
+    col_strings = []
     for i in range(size):
-        row_sprint.append("Q" if i == row else "_")
-    return " ".join(row_sprint)
+        col_strings.append("Q" if i == row else "_")
+    return " ".join(col_strings)
 
 
-def sprint_board(board):
+def stringify(board):
     size = len(board)
-    board_sprint = []
+    row_strings = []
     for row in board:
-        board_sprint.append(sprint_row(size, row))
-    return "\n".join(board_sprint) + "\n"
+        row_strings.append(stringify_row(size, row))
+    return "\n".join(row_strings) + "\n"
 
 
 def has_collision(board, x, y):
