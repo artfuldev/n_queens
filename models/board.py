@@ -1,11 +1,12 @@
-from typing import Tuple
+from typing import Generator, Tuple
 
 
 Board = list[int]
 Index = Tuple[int, int]
 
 
-def has_collision(board: Board, x: int, y: int) -> bool:
+def has_collision(board: Board, index: Index) -> bool:
+    x, y = index
     x_queen = board[x]
     y_queen = board[y]
     if x_queen == y_queen:
@@ -15,14 +16,11 @@ def has_collision(board: Board, x: int, y: int) -> bool:
     return row_diff == col_diff or row_diff == -col_diff
 
 
-def colliding_indices(board: Board) -> list[Index]:
-    size = len(board)
-    indices: list[Index] = []
+def indices(size: int) -> Generator[Index, None, None]:
     for x in range(size):
         for y in range(size):
-            if x != y and has_collision(board, x, y):
-                indices.append([x, y])
-    return indices
+            if x != y:
+                yield [x, y]
 
 
 def __stringify_row(size: int, row: int):

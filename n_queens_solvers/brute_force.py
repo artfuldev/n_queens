@@ -1,5 +1,6 @@
 from copy import copy
-from models.board import Board, colliding_indices
+from functools import partial
+from models.board import Board, has_collision, indices
 from solvers.brute_force import BruteForceSolver
 
 def __next_permutation(board: Board) -> Board:
@@ -29,7 +30,7 @@ def __next(size: int, board: Board) -> Board | None:
     return None if next == list(range(size)) else next
 
 def __accept(size: int, board: Board) -> bool:
-    return len(colliding_indices(board)) == 0
+    return not any(filter(partial(has_collision, board), indices(size)))
 
 
 def solve(size: int):
