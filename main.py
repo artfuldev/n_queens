@@ -3,6 +3,8 @@ from models.board import Board, stringify
 from n_queens_solvers.brute_force import solve
 from int_utils import nth
 
+summary = "size {:3d}, {:3d} solution{}, {:0.3f}s, {}"
+
 
 def find_solutions(size: int, count: int, until: int = None, summarize=False):
     stop = size + 1 if until is None else until + 1
@@ -24,10 +26,10 @@ def find_solutions(size: int, count: int, until: int = None, summarize=False):
         solutions_count = len(solutions)
         if solutions_count != 0:
             print(
-                "size {:3d}, {:3d} solution{}, {:0.3f}s, {}".format(
+                summary.format(
                     n,
                     solutions_count,
-                    "s" if solutions_count > 1 else "",
+                    "s" if solutions_count != 1 else "",
                     seconds,
                     solutions[-1],
                 )
@@ -39,7 +41,15 @@ def find_solutions(size: int, count: int, until: int = None, summarize=False):
                     )
                 )
         else:
-            print("No solution found for {}x{} board in {:0.3f}s".format(n, n, seconds))
+            print(
+                summary.format(
+                    n,
+                    0,
+                    "s",
+                    seconds,
+                    None,
+                )
+            )
 
 
 find_solutions(4, 100, 9, summarize=True)
