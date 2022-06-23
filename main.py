@@ -1,10 +1,13 @@
 from timeit import default_timer
 from brute_force_solver import solve_first
-from board import stringify
 
-for size in range(8, 9):
+for size in range(15, 16):
     tic = default_timer()
     first_solution = solve_first(size)
     toc = default_timer()
-    print("1 solution for {}x{} board found in {:0.3f}s".format(size, size, toc - tic))
-    print(stringify(first_solution))
+    seconds = toc - tic
+    if first_solution is not None:
+        print("1 solution for {}x{} board found in {:0.3f}s".format(size, size, seconds))
+        print(first_solution.stringify())
+    else:
+        print("No solution found for {}x{} board in {:0.3f}s".format(size, size, seconds))
