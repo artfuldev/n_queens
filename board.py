@@ -39,13 +39,17 @@ def has_collision(board, x, y):
     return row_diff == col_diff or row_diff == -col_diff
 
 
-def collisions(board):
-    collisions = 0
+def colliding_indices(board):
+    indices = []
     for x in range(len(board)):
         for y in range(len(board)):
             if x != y and has_collision(board, x, y):
-                collisions += 1
-    return collisions
+                indices.append([x, y])
+    return indices
+
+
+def collisions(board):
+    return len(colliding_indices(board))
 
 
 def is_valid_board(board):
