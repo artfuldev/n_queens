@@ -30,12 +30,16 @@ class Board:
         if shuffled:
             shuffle(self.__rows)
         self.__colliding_indices = colliding_indices(self.__rows, self.__size)
+        self.__collisions = len(self.__colliding_indices)
 
     def size(self):
         return self.__size
 
+    def colliding_indices(self):
+        return self.__colliding_indices
+
     def collisions(self):
-        return len(self.__colliding_indices)
+        return self.__collisions
 
     def is_valid_until(self, row: int):
         def until_row(index):
