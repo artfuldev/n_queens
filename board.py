@@ -4,7 +4,7 @@ from board_utils import colliding_indices, place_queen
 
 class Board:
     def __init__(self, size: int = None, rows: list[int] = None, shuffled=False):
-        """Return a board of specified size >= 3, or the specified rows
+        """Return a board of specified size > 3, or the specified rows
         (positions of queens in each row), after optionally shuffling them. The
         size parameter is ignored if rows are provided."""
         if size is None and rows is None:
