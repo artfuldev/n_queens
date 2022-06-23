@@ -18,6 +18,8 @@ class Board:
                 raise
             if any(row >= size or row < 0 or not isinstance(row, int) for row in rows):
                 raise
+            if size != len(list(set(rows))):
+                raise
             self.__rows = copy(rows)
             self.__size = len(rows)
         else:
