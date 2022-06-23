@@ -1,49 +1,20 @@
 from timeit import default_timer
-from models.board import Board, stringify
+from models.reporter import report
 from n_queens_solvers.brute_force import solve
-from int_utils import nth
 from itertools import islice
 
 summary = "size {:3d}, {:3d} solution{}, {:0.3f}s, {}"
 
 
-def find_solutions(size: int, count=1, until: int = None, summarize=False):
+def find_solutions(size: int, count=1, until: int = None, report=report):
     stop = size + 1 if until is None else until + 1
     for n in range(size, stop):
-        tic = default_timer()
         if count <= 0:
             raise
-        tic = default_timer()
+        started = default_timer()
         solutions = list(islice(solve(n), count))
-        toc = default_timer()
-        seconds = toc - tic
-        solutions_count = len(solutions)
-        if solutions_count != 0:
-            print(
-                summary.format(
-                    n,
-                    solutions_count,
-                    "s" if solutions_count != 1 else "",
-                    seconds,
-                    solutions[-1],
-                )
-            )
-            if not summarize:
-                print(
-                    "{} solution\n{}".format(
-                        nth(solutions_count), stringify(solutions[-1])
-                    )
-                )
-        else:
-            print(
-                summary.format(
-                    n,
-                    0,
-                    "s",
-                    seconds,
-                    None,
-                )
-            )
+        ended = default_timer()
+        print(report(size, ended - started, solutions))
 
 
-find_solutions(4, count=100, until=9, summarize=True)
+find_solutions(4, count=100, until=9)
