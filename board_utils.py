@@ -10,8 +10,6 @@ def place_queen(board: list[int], row: int, col: int):
 def has_collision(board: list[int], x: int, y: int):
     x_queen = board[x]
     y_queen = board[y]
-    if x_queen is None or y_queen is None:
-        return False
     if x_queen == y_queen:
         return True
     row_diff = x - y
