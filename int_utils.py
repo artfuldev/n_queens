@@ -1,13 +1,13 @@
-__switch_mod_100 = {
+__mod_100_nth = {
     11: 'th',
     12: 'th',
     13: 'th',
 }
-__switch = {
+__nth = {
     1: 'st',
     2: 'nd',
     3: 'rd',
 }
 
 def nth(n: int):
-    return '{}{}'.format(n, __switch_mod_100.get(n % 100, __switch.get(n % 10, 'th')))
+    return '{}{}'.format(n, __mod_100_nth.get(n % 100, __nth.get(n % 10, 'th')))
