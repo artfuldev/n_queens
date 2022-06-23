@@ -60,6 +60,7 @@ def create(size):
     board = [None for row in range(size)]
     return board
 
+
 def create_filled(size):
     board = [None for row in range(size)]
     positions = list(range(size))
