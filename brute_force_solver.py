@@ -1,4 +1,4 @@
-from board import create, place_queen, remove_queen, is_valid_board
+from board import create, place_queen, is_valid_board
 
 
 def solve_row(board, row):
@@ -29,7 +29,6 @@ def solve_row_first(board, row):
             solution = solve_row_first(board, row + 1)
             if solution is not None:
                 return solution
-        board = remove_queen(board, row)
         col += 1
     return solution
 
