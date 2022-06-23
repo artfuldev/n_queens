@@ -1,3 +1,4 @@
+from copy import copy
 from random import shuffle
 from board_utils import colliding_indices, place_queen, swap
 
@@ -17,7 +18,7 @@ class Board:
                 raise
             if any(row >= size or row < 0 or not isinstance(row, int) for row in rows):
                 raise
-            self.__rows = rows
+            self.__rows = copy(rows)
             self.__size = len(rows)
         else:
             if not isinstance(size, int):
