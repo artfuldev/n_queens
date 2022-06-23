@@ -21,7 +21,7 @@ def __next_permutation(board: Board) -> Board:
 
 
 def __first(size: int):
-    return Board(size)
+    return Board(rows=list(range(size)))
 
 
 def __next(size: int, board: Board):
