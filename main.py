@@ -1,5 +1,5 @@
 from timeit import default_timer
-from models.board import Board
+from models.board import Board, stringify
 from n_queens_solvers.brute_force import solve
 from int_utils import nth
 
@@ -33,12 +33,10 @@ def find_solutions(size: int, count: int, until: int = None):
                 )
             )
             print(
-                "{} solution\n{}".format(
-                    nth(solutions_count), solutions[-1].stringify()
-                )
+                "{} solution\n{}".format(nth(solutions_count), stringify(solutions[-1]))
             )
         else:
             print("No solution found for {}x{} board in {:0.3f}s".format(n, n, seconds))
 
 
-find_solutions(8, 100)
+find_solutions(4, 100, 20)

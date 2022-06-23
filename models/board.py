@@ -1,78 +1,41 @@
-from copy import copy
-from random import shuffle
-from models.board_utils import colliding_indices, place_queen, swap
+from typing import Tuple
 
 
-class Board:
-    def __init__(self, size: int = None, rows: list[int] = None, shuffled=False):
-        """Return a board of specified size > 3, or the specified rows
-        (positions of queens in each row), after optionally shuffling them. The
-        size parameter is ignored if rows are provided."""
-        if size is None and rows is None:
-            raise
-        if rows is not None:
-            if not isinstance(rows, list):
-                raise
-            size = len(rows)
-            if size <= 3:
-                raise
-            if any(row >= size or row < 0 or not isinstance(row, int) for row in rows):
-                raise
-            if size != len(list(set(rows))):
-                raise
-            self.__rows = copy(rows)
-            self.__size = len(rows)
-        else:
-            if not isinstance(size, int):
-                raise
-            if size <= 3:
-                raise
-            self.__size = size
-            self.__rows = [row for row in range(size)]
-        if shuffled:
-            shuffle(self.__rows)
-        self.__colliding_indices = colliding_indices(self.__rows, self.__size)
-        self.__collisions = len(self.__colliding_indices)
-    
-    def rows(self):
-        return copy(self.__rows)
+Board = list[int]
+Index = Tuple[int, int]
 
-    def size(self):
-        return self.__size
 
-    def colliding_indices(self):
-        return copy(self.__colliding_indices)
+def has_collision(board: Board, x: int, y: int) -> bool:
+    x_queen = board[x]
+    y_queen = board[y]
+    if x_queen == y_queen:
+        return True
+    row_diff = x - y
+    col_diff = x_queen - y_queen
+    return row_diff == col_diff or row_diff == -col_diff
 
-    def collisions(self):
-        return self.__collisions
 
-    def is_valid_until(self, row: int):
-        def until_row(index):
-            x, y = index
-            return x <= row and y <= row
+def colliding_indices(board: Board) -> list[Index]:
+    size = len(board)
+    indices: list[Index] = []
+    for x in range(size):
+        for y in range(size):
+            if x != y and has_collision(board, x, y):
+                indices.append([x, y])
+    return indices
 
-        return len(list(filter(until_row, self.__colliding_indices))) == 0
 
-    def is_valid(self):
-        return self.collisions() == 0
+def __stringify_row(size: int, row: int):
+    col_strings = []
+    for i in range(size):
+        col_strings.append("Q" if i == row else "_")
+    return " ".join(col_strings)
 
-    def queen(self, row: int):
-        return self.__rows[row]
 
-    def __stringify_row(self, row: int):
-        col_strings = []
-        for i in range(self.__size):
-            col_strings.append("Q" if i == row else "_")
-        return " ".join(col_strings)
-
-    def stringify(self):
-        row_strings = []
-        for row in self.__rows:
-            row_strings.append(self.__stringify_row(row))
-        return "\n".join(row_strings) + "\n"
-
-    def place(self, row: int, col: int):
-        return Board(rows=place_queen(self.__rows, row, col))
-    
-    def swap(self, row_x: int, row_y: int):
-        return Board(rows=(swap(self.__rows, row_x, row_y)))
+def stringify(board: Board):
+    size = len(board)
+    row_strings = []
+    for row in board:
+        row_strings.append(__stringify_row(size, row))
+        row_strings.append("\n")
+    return "".join(row_strings)
