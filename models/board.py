@@ -1,6 +1,6 @@
 from copy import copy
 from random import shuffle
-from board_utils import colliding_indices, place_queen, swap
+from models.board_utils import colliding_indices, place_queen, swap
 
 
 class Board:
