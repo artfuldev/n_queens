@@ -2,6 +2,7 @@ from timeit import default_timer
 from models.board import Board, stringify
 from n_queens_solvers.brute_force import solve
 from int_utils import nth
+from itertools import islice
 
 summary = "size {:3d}, {:3d} solution{}, {:0.3f}s, {}"
 
@@ -12,15 +13,8 @@ def find_solutions(size: int, count=1, until: int = None, summarize=False):
         tic = default_timer()
         if count <= 0:
             raise
-        solutions: list[Board] = []
         tic = default_timer()
-        solutions_generator = solve(n)
-        for i in range(count):
-            solution = next(solutions_generator, None)
-            if solution is None:
-                break
-            else:
-                solutions.append(solution)
+        solutions = list(islice(solve(n), count))
         toc = default_timer()
         seconds = toc - tic
         solutions_count = len(solutions)
