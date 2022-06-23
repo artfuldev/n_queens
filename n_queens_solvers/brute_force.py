@@ -1,31 +1,38 @@
 from models.board import Board
 from solvers.brute_force import BruteForceSolver
-from typing import Generator
 
 
-def candidates(rows: list[int], index=0) -> Generator[Board, None, None]:
-    length = len(rows)
-    if index > length:
-        return
-    if index == length:
-        yield Board(rows=rows)
+def __next_permutation(board: Board) -> Board:
+    rows = board.rows()
+    r = len(rows) - 1
+    while rows[r - 1] >= rows[r] and r > 0:
+        r -= 1
+    pivot = r
+    if pivot == 0:
+        rows.sort()
+        return Board(rows=rows)
     else:
-        for i in range(index, length):
-            rows[i], rows[index] = rows[index], rows[i]
-            for candidate in candidates(rows, index + 1):
-                yield candidate
-            rows[index], rows[i] = rows[i], rows[index]
+        swap = len(rows) - 1
+        while rows[pivot - 1] >= rows[swap] and swap >= 0:
+            swap -= 1
+        rows[pivot - 1], rows[swap] = rows[swap], rows[pivot - 1]
+        rows[pivot:] = sorted(rows[pivot:])
+    return Board(rows=rows)
 
 
-class Solver:
-    def __init__(self, size: int):
-        generator = candidates(list(range(size)))
-        self.__solver = BruteForceSolver[Board, int](
-            lambda size: next(generator),
-            lambda size, board: next(generator, None),
-            lambda size, board: board.is_valid(),
-        )
-        self.__size = size
+def __first(size: int):
+    return Board(size)
 
-    def solve(self):
-        return self.__solver.solve(self.__size)
+
+def __next(size: int, board: Board):
+    next = __next_permutation(board)
+    return None if next.rows() == list(range(size)) else next
+
+
+def __accept(size: int, board: Board):
+    return board.is_valid()
+
+
+def solve(size: int):
+    for board in BruteForceSolver(__first, __next, __accept).solve(size):
+        yield board

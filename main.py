@@ -1,6 +1,6 @@
 from timeit import default_timer
 from models.board import Board
-from n_queens_solvers.brute_force import Solver
+from n_queens_solvers.brute_force import solve
 from int_utils import nth
 
 
@@ -12,7 +12,7 @@ def find_solutions(size: int, count: int, until: int = None):
             raise
         solutions: list[Board] = []
         tic = default_timer()
-        solutions_generator = Solver(n).solve()
+        solutions_generator = solve(n)
         for i in range(count):
             solution = next(solutions_generator, None)
             if solution is None:
