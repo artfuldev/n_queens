@@ -1,5 +1,5 @@
 from random import shuffle
-from board_utils import colliding_indices, place_queen
+from board_utils import colliding_indices, place_queen, swap
 
 
 class Board:
@@ -63,3 +63,6 @@ class Board:
 
     def place(self, row: int, col: int):
         return Board(rows=place_queen(self.__rows, row, col))
+    
+    def swap(self, row_x: int, row_y: int):
+        return Board(rows=(swap(self.__rows, row_x, row_y)))
