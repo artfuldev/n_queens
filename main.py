@@ -1,4 +1,5 @@
 from timeit import default_timer
+from board import Board
 from brute_force_solver import solve
 from int_utils import nth
 
@@ -9,7 +10,7 @@ def find_solutions(size: int, count: int, until: int = None):
         tic = default_timer()
         if count <= 0:
             raise
-        solutions = []
+        solutions: list[Board] = []
         tic = default_timer()
         solutions_generator = solve(n)
         for i in range(count):
