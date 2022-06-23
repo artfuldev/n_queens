@@ -17,9 +17,13 @@ def candidates(rows: list[int], index=0) -> Generator[Board, None, None]:
 
 class Solver:
     def __init__(self, size: int):
-        self.solver = BruteForceSolver[Board](
-            candidates(list(range(size))), lambda board: board.is_valid()
+        generator = candidates(list(range(size)))
+        self.__solver = BruteForceSolver[Board, int](
+            lambda size: next(generator),
+            lambda size, board: next(generator, None),
+            lambda size, board: board.is_valid()
         )
+        self.__size = size
 
-    def solve(self) -> Generator[Board, None, None]:
-        return self.solver.solve()
+    def solve(self):
+        return self.__solver.solve(self.__size)
