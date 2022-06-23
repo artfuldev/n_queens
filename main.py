@@ -39,4 +39,4 @@ def find_solutions(size: int, count: int, until: int = None):
             print("No solution found for {}x{} board in {:0.3f}s".format(n, n, seconds))
 
 
-find_solutions(4, 100, 20)
+find_solutions(4, 100, 8)
