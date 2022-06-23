@@ -31,12 +31,15 @@ class Board:
             shuffle(self.__rows)
         self.__colliding_indices = colliding_indices(self.__rows, self.__size)
         self.__collisions = len(self.__colliding_indices)
+    
+    def rows(self):
+        return copy(self.__rows)
 
     def size(self):
         return self.__size
 
     def colliding_indices(self):
-        return self.__colliding_indices
+        return copy(self.__colliding_indices)
 
     def collisions(self):
         return self.__collisions
