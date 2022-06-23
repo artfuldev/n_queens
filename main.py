@@ -6,7 +6,7 @@ from int_utils import nth
 summary = "size {:3d}, {:3d} solution{}, {:0.3f}s, {}"
 
 
-def find_solutions(size: int, count: int, until: int = None, summarize=False):
+def find_solutions(size: int, count=1, until: int = None, summarize=False):
     stop = size + 1 if until is None else until + 1
     for n in range(size, stop):
         tic = default_timer()
@@ -52,4 +52,4 @@ def find_solutions(size: int, count: int, until: int = None, summarize=False):
             )
 
 
-find_solutions(4, 100, 9, summarize=True)
+find_solutions(4, count=100, until=9, summarize=True)
