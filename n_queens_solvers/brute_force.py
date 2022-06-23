@@ -2,6 +2,7 @@ from models.board import Board
 from solvers.brute_force import BruteForceSolver
 from typing import Generator
 
+
 def candidates(rows: list[int], index=0) -> Generator[Board, None, None]:
     length = len(rows)
     if index > length:
@@ -15,13 +16,14 @@ def candidates(rows: list[int], index=0) -> Generator[Board, None, None]:
                 yield candidate
             rows[index], rows[i] = rows[i], rows[index]
 
+
 class Solver:
     def __init__(self, size: int):
         generator = candidates(list(range(size)))
         self.__solver = BruteForceSolver[Board, int](
             lambda size: next(generator),
             lambda size, board: next(generator, None),
-            lambda size, board: board.is_valid()
+            lambda size, board: board.is_valid(),
         )
         self.__size = size
 
