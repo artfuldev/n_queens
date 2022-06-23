@@ -10,7 +10,7 @@ def solve_row(board: Board, row: int):
     col = 0
     while col < board_size:
         board = board.place(row, col)
-        if board.is_valid():
+        if board.is_valid_until(row):
             for solution in solve_row(board, row + 1):
                 solutions.append(solution)
         col += 1
@@ -25,7 +25,7 @@ def solve_row_first(board: Board, row: int):
     col = 0
     while col < board_size:
         board = board.place(row, col)
-        if board.is_valid():
+        if board.is_valid_until(row):
             solution = solve_row_first(board, row + 1)
             if solution is not None:
                 return solution
@@ -33,9 +33,9 @@ def solve_row_first(board: Board, row: int):
     return solution
 
 
-def solve(board_size):
-    return solve_row(Board.empty(board_size), 0)
+def solve(size):
+    return solve_row(Board(size), 0)
 
 
-def solve_first(board_size):
-    return solve_row_first(Board.empty(board_size), 0)
+def solve_first(size):
+    return solve_row_first(Board(size), 0)
