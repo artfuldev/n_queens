@@ -4,7 +4,7 @@ from n_queens_solvers.brute_force import solve
 from int_utils import nth
 
 
-def find_solutions(size: int, count: int, until: int = None):
+def find_solutions(size: int, count: int, until: int = None, summarize=False):
     stop = size + 1 if until is None else until + 1
     for n in range(size, stop):
         tic = default_timer()
@@ -24,19 +24,22 @@ def find_solutions(size: int, count: int, until: int = None):
         solutions_count = len(solutions)
         if solutions_count != 0:
             print(
-                "{} solution{} for {}x{} board found in {:0.3f}s".format(
+                "size {:3d}, {:3d} solution{}, {:0.3f}s, {}".format(
+                    n,
                     solutions_count,
                     "s" if solutions_count > 1 else "",
-                    n,
-                    n,
                     seconds,
+                    solutions[-1],
                 )
             )
-            print(
-                "{} solution\n{}".format(nth(solutions_count), stringify(solutions[-1]))
-            )
+            if not summarize:
+                print(
+                    "{} solution\n{}".format(
+                        nth(solutions_count), stringify(solutions[-1])
+                    )
+                )
         else:
             print("No solution found for {}x{} board in {:0.3f}s".format(n, n, seconds))
 
 
-find_solutions(4, 100, 8)
+find_solutions(4, 100, 9, summarize=True)
