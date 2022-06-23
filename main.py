@@ -5,8 +5,8 @@ from int_utils import nth
 
 
 def find_solutions(size: int, count: int, until: int = None):
-    until = size + 1 if until is None else until
-    for n in range(size, until):
+    stop = size + 1 if until is None else until + 1
+    for n in range(size, stop):
         tic = default_timer()
         if count <= 0:
             raise
