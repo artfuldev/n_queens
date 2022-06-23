@@ -14,7 +14,7 @@ def find_solutions(size: int, count=1, until: int = None, report=report):
         started = default_timer()
         solutions = list(islice(solve(n), count))
         ended = default_timer()
-        print(report(size, ended - started, solutions))
+        print(report(n, ended - started, solutions))
 
 
-find_solutions(4, until=9)
+find_solutions(4, until=10)
