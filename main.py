@@ -17,4 +17,4 @@ def find_solutions(size: int, count=1, until: int = None, report=report):
         print(report(size, ended - started, solutions))
 
 
-find_solutions(4, count=100, until=9)
+find_solutions(4, until=9)
