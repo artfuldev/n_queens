@@ -35,6 +35,4 @@ def __accept(size: int, board: Board) -> bool:
     return not any(filter(partial(has_collision, board), indices(size)))
 
 
-def brute_force(size: int):
-    for board in algorithm(__first, __next, __accept)(size):
-        yield board
+brute_force = algorithm(__first, __next, __accept)
