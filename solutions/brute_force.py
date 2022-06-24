@@ -28,7 +28,7 @@ def __first(size: Size) -> Board:
 
 def __next(size: Size, board: Board) -> Board | None:
     next = __next_permutation(board)
-    return None if next == list(range(size)) else next
+    return None if next == __first(size) else next
 
 
 def __accept(size: Size, board: Board) -> bool:
