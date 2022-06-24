@@ -1,6 +1,6 @@
 from typing import Generator, Tuple
 
-
+Size = int
 Board = list[int]
 Index = Tuple[int, int]
 
@@ -16,7 +16,7 @@ def has_collision(board: Board, index: Index) -> bool:
     return row_diff == col_diff or row_diff == -col_diff
 
 
-def indices(size: int) -> Generator[Index, None, None]:
+def indices(size: Size) -> Generator[Index, None, None]:
     for x in range(size):
         for y in range(size):
             if x != y:

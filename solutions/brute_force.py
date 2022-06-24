@@ -1,6 +1,6 @@
 from copy import copy
 from functools import partial
-from models.board import Board, has_collision, indices
+from models.board import Board, Size, has_collision, indices
 from algorithms.brute_force import brute_force as algorithm
 
 
@@ -22,16 +22,16 @@ def __next_permutation(board: Board) -> Board:
     return rows
 
 
-def __first(size: int) -> Board:
+def __first(size: Size) -> Board:
     return list(range(size))
 
 
-def __next(size: int, board: Board) -> Board | None:
+def __next(size: Size, board: Board) -> Board | None:
     next = __next_permutation(board)
     return None if next == list(range(size)) else next
 
 
-def __accept(size: int, board: Board) -> bool:
+def __accept(size: Size, board: Board) -> bool:
     return not any(filter(partial(has_collision, board), indices(size)))
 
 
