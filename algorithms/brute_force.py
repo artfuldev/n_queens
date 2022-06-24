@@ -1,15 +1,15 @@
 from typing import Callable, Generator, TypeVar
 
-C = TypeVar("C")
-P = TypeVar("P")
+Candidate = TypeVar("Candidate")
+Problem = TypeVar("Problem")
 
 
 def brute_force(
-    first: Callable[[P], C],
-    next: Callable[[P, C], C | None],
-    accept: Callable[[P, C], bool],
-) -> Callable[[P], Generator[C, None, None]]:
-    def solve(problem: P):
+    first: Callable[[Problem], Candidate],
+    next: Callable[[Problem, Candidate], Candidate | None],
+    accept: Callable[[Problem, Candidate], bool],
+) -> Callable[[Problem], Generator[Candidate, None, None]]:
+    def solve(problem: Problem):
         candidate = first(problem)
         while candidate is not None:
             if accept(problem, candidate):
