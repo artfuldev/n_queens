@@ -1,3 +1,4 @@
+from copy import copy
 from typing import Generator, NewType, Tuple
 
 Size = NewType("Size", int)
@@ -5,6 +6,12 @@ Row = NewType("Row", int)
 Column = NewType("Column", int)
 Board = NewType("Board", list[Column])
 Index = NewType("Index", Tuple[Row, Column])
+
+
+def place_queen(board: Board, row: Row, column: Column) -> Board:
+    next = copy(board)
+    next[row] = column
+    return Board(next)
 
 
 def has_collision(board: Board, index: Index) -> bool:
