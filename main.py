@@ -4,18 +4,19 @@ from solutions.brute_force import brute_force
 from solutions.back_tracking import back_tracking
 from itertools import islice
 
-summary = "size {:3d}, {:3d} solution{}, {:0.3f}s, {}"
+solvers = {"brute_force": brute_force, "back_tracking": back_tracking}
 
 
 def find_solutions(size: int, count=1, until: int = None, report=report):
+    if count <= 0:
+        raise
     stop = size + 1 if until is None else until + 1
     for n in range(size, stop):
-        if count <= 0:
-            raise
-        started = default_timer()
-        solutions = list(islice(back_tracking(n), count))
-        ended = default_timer()
-        print(report(n, ended - started, solutions))
+        for name, solve in solvers.items():
+            started = default_timer()
+            solutions = list(islice(solve(n), count))
+            ended = default_timer()
+            print(report(n, ended - started, name, solutions))
 
 
-find_solutions(4, count=100, until=9)
+find_solutions(4, count=1024, until=15)
