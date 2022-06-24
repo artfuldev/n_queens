@@ -1,6 +1,6 @@
 from timeit import default_timer
 from models.reporter import report
-from n_queens_solvers.brute_force import solve
+from solutions.brute_force import brute_force
 from itertools import islice
 
 summary = "size {:3d}, {:3d} solution{}, {:0.3f}s, {}"
@@ -12,9 +12,9 @@ def find_solutions(size: int, count=1, until: int = None, report=report):
         if count <= 0:
             raise
         started = default_timer()
-        solutions = list(islice(solve(n), count))
+        solutions = list(islice(brute_force(n), count))
         ended = default_timer()
         print(report(n, ended - started, solutions))
 
 
-find_solutions(4, until=10)
+find_solutions(4, count=100, until=9)

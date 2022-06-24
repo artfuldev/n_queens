@@ -1,7 +1,8 @@
 from copy import copy
 from functools import partial
 from models.board import Board, has_collision, indices
-from solvers.brute_force import BruteForceSolver
+from algorithms.brute_force import brute_force as algorithm
+
 
 def __next_permutation(board: Board) -> Board:
     rows = copy(board)
@@ -29,10 +30,11 @@ def __next(size: int, board: Board) -> Board | None:
     next = __next_permutation(board)
     return None if next == list(range(size)) else next
 
+
 def __accept(size: int, board: Board) -> bool:
     return not any(filter(partial(has_collision, board), indices(size)))
 
 
-def solve(size: int):
-    for board in BruteForceSolver(__first, __next, __accept).solve(size):
+def brute_force(size: int):
+    for board in algorithm(__first, __next, __accept)(size):
         yield board
