@@ -12,18 +12,18 @@ def __next_permutation(board: Board) -> Board:
     pivot = r
     if pivot == 0:
         rows.sort()
-        return rows
+        return Board(rows)
     else:
         swap = len(rows) - 1
         while rows[pivot - 1] >= rows[swap] and swap >= 0:
             swap -= 1
         rows[pivot - 1], rows[swap] = rows[swap], rows[pivot - 1]
         rows[pivot:] = sorted(rows[pivot:])
-    return rows
+    return Board(rows)
 
 
 def __first(size: Size) -> Board:
-    return list(range(size))
+    return Board(list(range(size)))
 
 
 def __next(size: Size, board: Board) -> Board | None:

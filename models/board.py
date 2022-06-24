@@ -1,8 +1,10 @@
-from typing import Generator, Tuple
+from typing import Generator, NewType, Tuple
 
-Size = int
-Board = list[int]
-Index = Tuple[int, int]
+Size = NewType("Size", int)
+Row = NewType("Row", int)
+Column = NewType("Column", int)
+Board = NewType("Board", list[Column])
+Index = NewType("Index", Tuple[Row, Column])
 
 
 def has_collision(board: Board, index: Index) -> bool:
@@ -20,7 +22,8 @@ def indices(size: Size) -> Generator[Index, None, None]:
     for x in range(size):
         for y in range(size):
             if x != y:
-                yield [x, y]
+                yield Index([Row(x), Column(y)])
+
 
 def stringify(board: Board):
     size = len(board)
