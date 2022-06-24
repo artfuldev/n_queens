@@ -1,4 +1,5 @@
 from functools import partial
+from itertools import islice
 from typing import Generator, NewType, Tuple
 from models.board import (
     Board,
@@ -57,6 +58,9 @@ def __first(size: Size, candidate: Candidate) -> Candidate:
     row = Row(__row(candidate) + 1)
     column = Column(0)
     board = place_queen(__board(candidate), row, column)
+    while len(set(islice(board, row + 1))) != row + 1:
+        column = Column(column + 1)
+        board = place_queen(__board(candidate), row, column)
     first = Candidate([row, column, board])
     return first
 
@@ -65,8 +69,11 @@ def __next(size: Size, candidate: Candidate) -> Candidate | None:
     row = __row(candidate)
     column = Column(__column(candidate) + 1)
     next = None
-    if column != size:
+    board = place_queen(__board(candidate), row, column)
+    while len(set(islice(board, row + 1))) != row + 1 and column != size:
+        column = Column(column + 1)
         board = place_queen(__board(candidate), row, column)
+    if column != size:
         next = Candidate([row, column, board])
     return next
 
