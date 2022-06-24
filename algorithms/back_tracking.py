@@ -13,7 +13,6 @@ def back_tracking(
     first: Callable[[Problem, Candidate], Candidate],
     next: Callable[[Problem, Candidate], Candidate | None],
 ):
-
     def try_solve(
         problem: Problem, candidate: Candidate
     ) -> Generator[Solution, None, None]:
