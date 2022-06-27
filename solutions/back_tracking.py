@@ -34,11 +34,12 @@ def __next(size: Size, board: Board) -> Board | None:
         return None
     row = Row(filled - 1)
     column = Column(board[-1] + 1)
-    board = place_queen(board, row, column)
-    while len(set(board)) != filled and column < size:
-        column = Column(column + 1)
+    while column < size:
         board = place_queen(board, row, column)
-    return None if column == size else board
+        if len(set(board)) == filled:
+            return board
+        column = Column(column + 1)
+    return None
 
 
 def __first(size: Size, board: Board) -> Board | None:
