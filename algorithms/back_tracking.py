@@ -33,6 +33,8 @@ def back_tracking(
 
     def solve(problem: Problem):
         candidate = root(problem)
-        return None if candidate is None else extend(problem, candidate)
+        if candidate is not None:
+            for solution in extend(problem, candidate):
+                yield solution
 
     return solve
