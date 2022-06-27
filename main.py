@@ -1,5 +1,5 @@
 from timeit import default_timer
-from models.reporter import report
+from domain.reporter import report
 from solutions.brute_force import brute_force
 from solutions.back_tracking import back_tracking
 from itertools import islice

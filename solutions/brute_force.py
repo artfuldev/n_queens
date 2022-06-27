@@ -1,6 +1,6 @@
 from copy import copy
 from functools import partial
-from models.board import Board, Column, Size, has_collision, row_pairs
+from domain.board import Board, Column, Size, has_collision, row_pairs
 from algorithms.brute_force import brute_force as algorithm
 
 

@@ -1,5 +1,5 @@
 from copy import copy
-from models.board import (
+from domain.board import (
     Board,
     Row,
     Size,
