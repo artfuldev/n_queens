@@ -22,8 +22,8 @@ def __next_permutation(board: Board) -> Board:
     return rows
 
 
-def __first(size: Size) -> Board:
-    return Board(list(map(Column, range(size))))
+def __first(size: Size) -> Board | None:
+    return Board(list(map(Column, range(size)))) if size > 3 else None
 
 
 def __next(size: Size, board: Board) -> Board | None:
