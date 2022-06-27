@@ -10,7 +10,7 @@ def back_tracking(
     reject: Callable[[Problem, Candidate], bool],
     accept: Callable[[Problem, Candidate], bool],
     output: Callable[[Problem, Candidate], Solution],
-    first: Callable[[Problem, Candidate], Candidate],
+    first: Callable[[Problem, Candidate], Candidate | None],
     next: Callable[[Problem, Candidate], Candidate | None],
 ):
     def try_solve(

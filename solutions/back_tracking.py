@@ -3,12 +3,12 @@ from itertools import islice
 from typing import Generator, NewType, Tuple
 from models.board import (
     Board,
-    Index,
+    RowPair,
     Size,
     Row,
     Column,
     has_collision,
-    indices,
+    row_pairs,
     place_queen,
 )
 from algorithms.back_tracking import back_tracking as algorithm
@@ -32,14 +32,15 @@ def __board(candidate: Candidate) -> Board:
 
 
 def __root(size: Size) -> Candidate:
-    return Candidate([Row(-1), Column(0), Board([0 for _ in range(size)])])
+    return Candidate((Row(-1), Column(0), Board([Column(0) for _ in range(size)])))
 
 
-def __indices(size: Size, candidate: Candidate) -> Generator[Index, None, None]:
+def __indices(size: Size, candidate: Candidate) -> Generator[RowPair, None, None]:
     row = __row(candidate)
-    for x, y in indices(size):
+    for pair in row_pairs(size):
+        x, y = pair
         if x <= row and y <= row:
-            yield Index([Row(x), Column(y)])
+            yield pair
 
 
 def __reject(size: Size, candidate: Candidate) -> bool:
@@ -61,7 +62,7 @@ def __first(size: Size, candidate: Candidate) -> Candidate:
     while len(set(islice(board, row + 1))) != row + 1:
         column = Column(column + 1)
         board = place_queen(__board(candidate), row, column)
-    first = Candidate([row, column, board])
+    first = Candidate((row, column, board))
     return first
 
 
@@ -74,7 +75,7 @@ def __next(size: Size, candidate: Candidate) -> Candidate | None:
         column = Column(column + 1)
         board = place_queen(__board(candidate), row, column)
     if column != size:
-        next = Candidate([row, column, board])
+        next = Candidate((row, column, board))
     return next
 
 

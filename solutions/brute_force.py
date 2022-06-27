@@ -1,6 +1,6 @@
 from copy import copy
 from functools import partial
-from models.board import Board, Size, has_collision, indices
+from models.board import Board, Column, Size, has_collision, row_pairs
 from algorithms.brute_force import brute_force as algorithm
 
 
@@ -12,18 +12,18 @@ def __next_permutation(board: Board) -> Board:
     pivot = r
     if pivot == 0:
         rows.sort()
-        return Board(rows)
+        return rows
     else:
         swap = len(rows) - 1
         while rows[pivot - 1] >= rows[swap] and swap >= 0:
             swap -= 1
         rows[pivot - 1], rows[swap] = rows[swap], rows[pivot - 1]
         rows[pivot:] = sorted(rows[pivot:])
-    return Board(rows)
+    return rows
 
 
 def __first(size: Size) -> Board:
-    return Board(list(range(size)))
+    return Board(list(map(Column, range(size))))
 
 
 def __next(size: Size, board: Board) -> Board | None:
@@ -32,7 +32,7 @@ def __next(size: Size, board: Board) -> Board | None:
 
 
 def __accept(size: Size, board: Board) -> bool:
-    return not any(filter(partial(has_collision, board), indices(size)))
+    return not any(filter(partial(has_collision, board), row_pairs(size)))
 
 
 brute_force = algorithm(__first, __next, __accept)

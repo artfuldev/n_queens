@@ -5,7 +5,7 @@ Problem = TypeVar("Problem")
 
 
 def brute_force(
-    first: Callable[[Problem], Candidate],
+    first: Callable[[Problem], Candidate | None],
     next: Callable[[Problem, Candidate], Candidate | None],
     accept: Callable[[Problem, Candidate], bool],
 ) -> Callable[[Problem], Generator[Candidate, None, None]]:
