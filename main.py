@@ -1,10 +1,15 @@
 from timeit import default_timer
+from typing import Generator, Callable
+from domain.board import Board, Size
 from domain.reporter import report
 from solutions.brute_force import brute_force
 from solutions.back_tracking import back_tracking
 from itertools import islice
 
-solvers = {"brute_force": brute_force, "back_tracking": back_tracking}
+solvers: dict[str, Callable[[Size], Generator[Board, None, None]]] = {
+    "brute_force": brute_force,
+    "back_tracking": back_tracking,
+}
 
 
 def find_solutions(size: int, count=1, until: int = None, report=report):
@@ -14,7 +19,7 @@ def find_solutions(size: int, count=1, until: int = None, report=report):
     for n in range(size, stop):
         for name, solve in solvers.items():
             started = default_timer()
-            solutions = list(islice(solve(n), count))
+            solutions = list(islice(solve(Size(n)), count))
             ended = default_timer()
             print(report(n, ended - started, name, solutions))
 
