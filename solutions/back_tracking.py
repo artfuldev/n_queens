@@ -1,10 +1,7 @@
 from copy import copy
-from functools import partial
-from typing import Generator
 from models.board import (
     Board,
     Row,
-    RowPair,
     Size,
     Column,
     has_collision,
