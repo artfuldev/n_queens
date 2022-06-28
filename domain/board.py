@@ -5,7 +5,6 @@ Size = NewType("Size", int)
 Row = NewType("Row", int)
 Column = NewType("Column", int)
 Board = NewType("Board", list[Column])
-RowPair = NewType("RowPair", Tuple[Row, Row])
 
 
 def place_queen(board: Board, row: Row, column: Column) -> Board:
@@ -14,8 +13,8 @@ def place_queen(board: Board, row: Row, column: Column) -> Board:
     return Board(next)
 
 
-def has_collision(board: Board, rows: RowPair) -> bool:
-    row_x, row_y = rows
+def has_collision(board: Board, pair: Tuple[Row, Row]) -> bool:
+    row_x, row_y = pair
     col_x = board[row_x]
     col_y = board[row_y]
     if col_x == col_y:
@@ -25,11 +24,11 @@ def has_collision(board: Board, rows: RowPair) -> bool:
     return row_diff == col_diff or row_diff == -col_diff
 
 
-def row_pairs(size: Size) -> Generator[RowPair, None, None]:
+def row_pairs(size: Size) -> Generator[Tuple[Row, Row], None, None]:
     for x in range(size):
         for y in range(size):
             if x != y:
-                yield RowPair((Row(x), Row(y)))
+                yield Row(x), Row(y)
 
 
 def stringify(board: Board):
