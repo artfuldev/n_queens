@@ -8,7 +8,6 @@ Solution = TypeVar("Solution")
 def __identity(_: Problem, candidate: Candidate):
     return candidate
 
-
 def back_tracking(
     root: Callable[[Problem], Candidate | None],
     reject: Callable[[Problem, Candidate], bool],

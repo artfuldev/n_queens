@@ -27,7 +27,6 @@ def __reject(size: Size, board: Board) -> bool:
 def __accept(size: Size, board: Board) -> bool:
     return len(board) == size
 
-
 def __next(size: Size, board: Board) -> Board | None:
     filled = len(board)
     if filled > size:
@@ -40,7 +39,6 @@ def __next(size: Size, board: Board) -> Board | None:
             return board
         column = Column(column + 1)
     return None
-
 
 def __first(size: Size, board: Board) -> Board | None:
     seed = copy(board)
