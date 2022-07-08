@@ -30,9 +30,8 @@ def __population(n: int) -> list[Bits]:
 def __fitness(_: int, bits: Bits) -> float:
     return sum(bits)
 
-
 def __crossover(n: int, x: Bits, y: Bits) -> Bits:
-    return [x[i] if x[i] == y[i] else __bit() for i in range(n)]
+    return [choice([x[i], y[i]]) for i in range(n)]
 
 
 def __mutate(n: int, bits: Bits) -> Bits:

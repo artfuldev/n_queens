@@ -5,7 +5,7 @@ description = "Solve the n queens problem"
 authors = ["swhustla <fdkelly@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 
 [tool.poetry.dev-dependencies]
 
