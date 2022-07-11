@@ -1,5 +1,5 @@
 from copy import deepcopy
-from functools import partial
+from functools import cache, partial
 from math import floor
 from random import choice, choices, randint, random, shuffle
 from typing import Generator, Literal, Set, TypeAlias, Union, Tuple
@@ -28,6 +28,9 @@ def __collisions(n: Size, board: Board) -> list[Tuple[Row, Row]]:
     """returns a list of colliding row pairs"""
     return list(filter(partial(has_collision, board), row_pairs(n)))
 
+def __hash(board: Board) -> str:
+    """returns a hash of a board"""
+    return "".join(map(str, board))
 
 def __fitness(n: Size, board: Board) -> float:
     """returns the fitness of a board"""
@@ -84,15 +87,12 @@ def __terminate(n: Size, individual: Individual[Board], generation: int) -> bool
 
 _algorithm = algorithm(__population, __fitness, __crossover, __mutate, __terminate)
 
-def hash(board: Board) -> str:
-    """returns a hash of a board"""
-    return "".join(map(str, board))
 
 def genetic(n: Size) -> Generator[Board, None, None]:
     """returns a generator of boards using the genetic algorithm"""
     uniques: Set[Board] = set()
     for individual in _algorithm(n):
-        candidate_hash = hash(individual.candidate)
+        candidate_hash = __hash(individual.candidate)
         if individual.fitness >= 100 and candidate_hash not in uniques:
             uniques.add(candidate_hash)
             yield individual.candidate
