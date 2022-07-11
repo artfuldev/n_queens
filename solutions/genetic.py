@@ -90,7 +90,7 @@ _algorithm = algorithm(__population, __fitness, __crossover, __mutate, __termina
 
 def genetic(n: Size) -> Generator[Board, None, None]:
     """returns a generator of boards using the genetic algorithm"""
-    uniques: Set[Board] = set()
+    uniques: Set[str] = set()
     for individual in _algorithm(n):
         candidate_hash = __hash(individual.candidate)
         if individual.fitness >= 100 and candidate_hash not in uniques:
