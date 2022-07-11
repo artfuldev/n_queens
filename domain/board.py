@@ -8,9 +8,10 @@ Board = NewType("Board", list[Column])
 
 
 def place_queen(board: Board, row: Row, column: Column) -> Board:
-    next = copy(board)
-    next[row] = column
-    return Board(next)
+    """returns a new board with a queen placed in the given row and column"""
+    next_board = copy(board)
+    next_board[row] = column
+    return Board(next_board)
 
 
 def has_collision(board: Board, pair: Tuple[Row, Row]) -> bool:
