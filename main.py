@@ -16,6 +16,7 @@ solvers: dict[str, Callable[[Size], Generator[Board, None, None]]] = {
 
 
 def find_solutions(size: int, count=1, until: int = None, report=report):
+    """returns a generator of solutions for a given size of board"""
     if count <= 0:
         raise
     stop = size + 1 if until is None else until + 1

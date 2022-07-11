@@ -8,28 +8,34 @@ from algorithms.genetic import Individual, genetic as algorithm
 
 
 def __column(n: Size) -> Column:
+    """returns a random column"""
     return Column(randint(0, n - 1))
 
 
 def __board(n: Size) -> Board:
+    """returns a random board with shuffled rows"""
     rows = list(range(n))
     shuffle(rows)
     return Board(rows)
 
 
 def __population(n: Size) -> list[Board]:
+    """returns a random population of n boards"""
     return [__board(n) for _ in range(n)]
 
 
 def __collisions(n: Size, board: Board) -> list[Tuple[Row, Row]]:
+    """returns a list of colliding row pairs"""
     return list(filter(partial(has_collision, board), row_pairs(n)))
 
 
 def __fitness(n: Size, board: Board) -> float:
+    """returns the fitness of a board"""
     return (pow(n, 2) - len(__collisions(n, board))) * 100 / pow(n, 2)
 
 
 def __crossover(n: Size, x: Board, y: Board) -> Board:
+    """Returns a new child board with a selection of rows from parents"""
     fills = list(range(n))
     child = [-1 for _ in range(n)]
     for i in range(n):
@@ -44,13 +50,12 @@ def __crossover(n: Size, x: Board, y: Board) -> Board:
 
 
 def __swap(board: Board, x: Row, y: Row):
+    """swaps two rows and ensures no collisions"""
     return place_queen(place_queen(board, x, board[y]), y, board[x])
 
-# 0, 1; 1, 0; 1, 3; 3, 1
-# 0 1 3
-# x = 0
 
 def __flatten(row_pairs: list[Tuple[Row, Row]]) -> list[Row]:
+    """returns a (flat) list of all rows in a list of row pairs"""
     rows = set()
     for x, y in row_pairs:
         rows.add(x)
@@ -58,6 +63,7 @@ def __flatten(row_pairs: list[Tuple[Row, Row]]) -> list[Row]:
     return list(rows)
 
 def __mutate(n: Size, board: Board) -> Board:
+    """returns a new board with a collided row swapped according to the mutation rate"""
     mutation_probability = 1 / n
     chance = random()
     if chance >= mutation_probability:
@@ -72,15 +78,18 @@ def __mutate(n: Size, board: Board) -> Board:
 
 
 def __terminate(n: Size, individual: Individual[Board], generation: int) -> bool:
+    """returns True if the algorithm should terminate"""
     return generation == n * 1000 or individual.fitness == 100
 
 
 _algorithm = algorithm(__population, __fitness, __crossover, __mutate, __terminate)
 
 def hash(board: Board) -> str:
+    """returns a hash of a board"""
     return "".join(map(str, board))
 
 def genetic(n: Size) -> Generator[Board, None, None]:
+    """returns a generator of boards using the genetic algorithm"""
     uniques: Set[Board] = set()
     for individual in _algorithm(n):
         candidate_hash = hash(individual.candidate)
