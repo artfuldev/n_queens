@@ -1,20 +1,13 @@
-from copy import deepcopy
-from functools import cache, partial
-from math import floor
-from random import choice, choices, randint, random, shuffle
-from typing import Generator, Literal, Set, TypeAlias, Union, Tuple
+from functools import partial
+from random import choice, random, shuffle
+from typing import Generator, Set, Tuple
 from domain.board import Board, Column, Row, Size, has_collision, place_queen, row_pairs
 from algorithms.genetic import Individual, genetic as algorithm
 
 
-def __column(n: Size) -> Column:
-    """returns a random column"""
-    return Column(randint(0, n - 1))
-
-
 def __board(n: Size) -> Board:
     """returns a random board with shuffled rows"""
-    rows = list(range(n))
+    rows = list(map(Column, range(n)))
     shuffle(rows)
     return Board(rows)
 
@@ -28,9 +21,11 @@ def __collisions(n: Size, board: Board) -> list[Tuple[Row, Row]]:
     """returns a list of colliding row pairs"""
     return list(filter(partial(has_collision, board), row_pairs(n)))
 
+
 def __hash(board: Board) -> str:
     """returns a hash of a board"""
     return "".join(map(str, board))
+
 
 def __fitness(n: Size, board: Board) -> float:
     """returns the fitness of a board"""
@@ -49,7 +44,7 @@ def __crossover(n: Size, x: Board, y: Board) -> Board:
         if child[i] == -1:
             child[i] = choice(fills)
             fills.remove(child[i])
-    return Board(child)
+    return Board(list(map(Column, child)))
 
 
 def __swap(board: Board, x: Row, y: Row):
@@ -64,6 +59,7 @@ def __flatten(row_pairs: list[Tuple[Row, Row]]) -> list[Row]:
         rows.add(x)
         rows.add(y)
     return list(rows)
+
 
 def __mutate(n: Size, board: Board) -> Board:
     """returns a new board with a collided row swapped according to the mutation rate"""
@@ -96,4 +92,3 @@ def genetic(n: Size) -> Generator[Board, None, None]:
         if individual.fitness >= 100 and candidate_hash not in uniques:
             uniques.add(candidate_hash)
             yield individual.candidate
-
