@@ -1,5 +1,5 @@
 from timeit import default_timer
-from typing import Generator, Callable
+from algorithms.solve import Solve
 from domain.board import Board, Size
 from domain.reporter import report
 from solutions.brute_force import brute_force
@@ -8,7 +8,7 @@ from solutions.genetic import genetic
 from itertools import islice
 
 
-solvers: dict[str, Callable[[Size], Generator[Board, None, None]]] = {
+solvers: dict[str, Solve[Size, Board]] = {
     "brute_force": brute_force,
     "back_tracking": back_tracking,
     "genetic": genetic,
