@@ -1,5 +1,7 @@
 from typing import Callable, Generator, TypeVar
 
+from algorithms.solve import Solve
+
 Candidate = TypeVar("Candidate")
 Problem = TypeVar("Problem")
 Solution = TypeVar("Solution")
@@ -15,7 +17,7 @@ def back_tracking(
     first: Callable[[Problem, Candidate], Candidate | None],
     next: Callable[[Problem, Candidate], Candidate | None],
     output: Callable[[Problem, Candidate], Solution] = __identity,
-):
+) -> Solve[Problem, Solution]:
     def extend(
         problem: Problem, candidate: Candidate
     ) -> Generator[Solution, None, None]:

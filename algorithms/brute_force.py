@@ -1,4 +1,5 @@
-from typing import Callable, Generator, TypeVar
+from typing import Callable, TypeVar
+from algorithms.solve import Solve
 
 Candidate = TypeVar("Candidate")
 Problem = TypeVar("Problem")
@@ -14,7 +15,7 @@ def brute_force(
     next: Callable[[Problem, Candidate], Candidate | None],
     accept: Callable[[Problem, Candidate], bool],
     output: Callable[[Problem, Candidate], Solution] = __identity,
-) -> Callable[[Problem], Generator[Solution, None, None]]:
+) -> Solve[Problem, Solution]:
     def solve(problem: Problem):
         candidate = first(problem)
         while candidate is not None:

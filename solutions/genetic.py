@@ -1,6 +1,7 @@
 from functools import partial
 from random import choice, random, shuffle
 from typing import Generator, Set, Tuple
+from algorithms.solve import Solve
 from domain.board import Board, Column, Row, Size, has_collision, place_queen, row_pairs
 from algorithms.genetic import Individual, genetic as algorithm
 
@@ -81,14 +82,16 @@ def __terminate(n: Size, individual: Individual[Board], generation: int) -> bool
     return generation == n * 1000 or individual.fitness == 100
 
 
-_algorithm = algorithm(__population, __fitness, __crossover, __mutate, __terminate)
+__algorithm: Solve[Size, Individual[Board]] = algorithm(__population, __fitness, __crossover, __mutate, __terminate)
 
 
-def genetic(n: Size) -> Generator[Board, None, None]:
+def __genetic(n: Size) -> Generator[Board, None, None]:
     """returns a generator of boards using the genetic algorithm"""
     uniques: Set[str] = set()
-    for individual in _algorithm(n):
+    for individual in __algorithm(n):
         candidate_hash = __hash(individual.candidate)
         if individual.fitness >= 100 and candidate_hash not in uniques:
             uniques.add(candidate_hash)
             yield individual.candidate
+
+genetic: Solve[Size, Board] = lambda n: __genetic(n)

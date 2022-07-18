@@ -1,4 +1,5 @@
 from copy import copy
+from algorithms.solve import Solve
 from domain.board import (
     Board,
     Row,
@@ -46,4 +47,4 @@ def __first(size: Size, board: Board) -> Board | None:
     return __next(size, seed)
 
 
-back_tracking = algorithm(__root, __reject, __accept, __first, __next)
+back_tracking: Solve[Size, Board] = algorithm(__root, __reject, __accept, __first, __next)

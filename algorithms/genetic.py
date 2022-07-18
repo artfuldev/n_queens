@@ -10,6 +10,8 @@ from typing import (
     cast,
 )
 
+from algorithms.solve import Solve
+
 
 Candidate = TypeVar("Candidate")
 Problem = TypeVar("Problem")
@@ -65,7 +67,7 @@ def genetic(
     terminate: Callable[[P, Individual[C], int], bool],
     select: Callable[[P, list[Individual[C]]], Tuple[C, C]] = __select,
     output: Callable[[P, Individual[C], int], S] = __result,
-) -> Callable[[P], Generator[S, None, None]]:
+) -> Solve[P, S]:
     def solve(problem: P) -> Generator[S, None, None]:
         def solve(problem: P, population: list[C], generation: int) -> S:
             population_count = len(population)

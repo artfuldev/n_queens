@@ -1,5 +1,6 @@
 from copy import copy
 from functools import partial
+from algorithms.solve import Solve
 from domain.board import Board, Column, Size, has_collision, row_pairs
 from algorithms.brute_force import brute_force as algorithm
 
@@ -35,4 +36,4 @@ def __accept(size: Size, board: Board) -> bool:
     return not any(filter(partial(has_collision, board), row_pairs(size)))
 
 
-brute_force = algorithm(__first, __next, __accept)
+brute_force: Solve[Size, Board] = algorithm(__first, __next, __accept)
