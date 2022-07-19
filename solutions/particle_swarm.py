@@ -32,8 +32,7 @@ def __quality(n: Size, position: Position) -> float:
 
 
 def __terminate(n: Size, position: Position) -> bool:
-    board = Board(list(map(Column, map(floor, position))))
-    return len(__collisions(n, board)) == 0
+    return __quality(n, position) == 100
 
 
 def __velocity(w: float, phi_p: float, phi_g: float):
