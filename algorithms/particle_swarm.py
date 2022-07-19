@@ -72,7 +72,7 @@ def particle_swarm(
     output: Callable[[Problem, Position], Solution],
 ) -> Solve[Problem, Solution]:
     def solve(problem: Problem):
-        def solve(problem: Problem):
+        def solve_one(problem: Problem):
             _size = size(problem)
             _limits = ranges(problem)
 
@@ -82,25 +82,16 @@ def particle_swarm(
             swarm = __initialize(_size, _limits, _quality)
             while not terminate(problem, swarm.best):
                 for i in range(_size):
-                    swarm.particles[i].velocity = velocity(
-                        problem,
-                        swarm.particles[i],
-                        swarm.best,
-                    )
-                    swarm.particles[i].position = __move(
-                        _limits,
-                        swarm.particles[i].position,
-                        swarm.particles[i].velocity,
-                    )
-                    if _quality(swarm.particles[i].position) > _quality(
-                        swarm.particles[i].best
-                    ):
-                        swarm.particles[i].best = swarm.particles[i].position
-                        if _quality(swarm.particles[i].best) > _quality(swarm.best):
-                            swarm.best = swarm.particles[i].best
+                    particle = swarm.particles[i]
+                    particle.velocity = velocity(problem, particle, swarm.best)
+                    particle.position = __move(_limits, particle.position, particle.velocity)
+                    if _quality(particle.position) > _quality(particle.best):
+                        particle.best = particle.position
+                        if _quality(particle.best) > _quality(swarm.best):
+                            swarm.best = particle.best
             return output(problem, swarm.best)
 
         while True:
-            yield solve(problem)
+            yield solve_one(problem)
 
     return solve

@@ -69,7 +69,7 @@ def genetic(
     output: Callable[[P, Individual[C], int], S] = __result,
 ) -> Solve[P, S]:
     def solve(problem: P) -> Generator[S, None, None]:
-        def solve(problem: P, population: list[C], generation: int) -> S:
+        def solve_one(problem: P, population: list[C], generation: int) -> S:
             population_count = len(population)
             gene_pool = list(
                 map(lambda c: Individual(c, fitness(problem, c)), population)
@@ -90,6 +90,6 @@ def genetic(
                 generation += 1
 
         while True:
-            yield solve(problem, population(problem), 1)
+            yield solve_one(problem, population(problem), 1)
 
     return solve
