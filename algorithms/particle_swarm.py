@@ -42,11 +42,17 @@ def __move(limits: list[Range], position: Position, velocity: Velocity) -> Posit
     return Position(next_position)
 
 
+def __from_particles(
+    quality: Callable[[Position], float], particles: List[Particle]
+) -> Swarm:
+    return Swarm(particles, max(particles, key=lambda p: quality(p.position)).position)
+
+
 def __initialize(
     swarm_size: int, limits: List[Range], quality: Callable[[Position], float]
 ) -> Swarm:
     dimensions = list(range(len(limits)))
-    swarm = Swarm([], Position(list(map(lambda r: uniform(r.low, r.high), limits))))
+    particles = []
     for _ in range(swarm_size):
         position = Position([])
         velocity = Velocity([])
@@ -57,10 +63,14 @@ def __initialize(
             abs_range = abs(high - low)
             velocity.append(uniform(-abs_range, abs_range))
         particle = Particle(position, velocity, position)
-        swarm.particles.append(particle)
-        if quality(position) > quality(swarm.best):
-            swarm.best = position
-    return swarm
+        particles.append(particle)
+    return __from_particles(quality, particles)
+
+
+def __topology(
+    problem: Problem, particle: Particle, all: List[Particle]
+) -> List[Particle]:
+    return all
 
 
 def particle_swarm(
@@ -70,6 +80,9 @@ def particle_swarm(
     terminate: Callable[[Problem, Position], bool],
     velocity: Callable[[Problem, Particle, Position], Velocity],
     output: Callable[[Problem, Position], Solution],
+    topology: Callable[
+        [Problem, Particle, List[Particle]], List[Particle]
+    ] = __topology,
 ) -> Solve[Problem, Solution]:
     def solve(problem: Problem):
         def solve(problem: Problem):
@@ -82,22 +95,24 @@ def particle_swarm(
             swarm = __initialize(_size, _limits, _quality)
             while not terminate(problem, swarm.best):
                 for i in range(_size):
-                    swarm.particles[i].velocity = velocity(
+                    particle = swarm.particles[i]
+                    local_swarm = __from_particles(
+                        _quality, topology(problem, particle, swarm.particles)
+                    )
+                    particle.velocity = velocity(
                         problem,
-                        swarm.particles[i],
-                        swarm.best,
+                        particle,
+                        local_swarm.best,
                     )
                     swarm.particles[i].position = __move(
                         _limits,
-                        swarm.particles[i].position,
-                        swarm.particles[i].velocity,
+                        particle.position,
+                        particle.velocity,
                     )
-                    if _quality(swarm.particles[i].position) > _quality(
-                        swarm.particles[i].best
-                    ):
-                        swarm.particles[i].best = swarm.particles[i].position
-                        if _quality(swarm.particles[i].best) > _quality(swarm.best):
-                            swarm.best = swarm.particles[i].best
+                    if _quality(particle.position) > _quality(particle.best):
+                        particle.best = particle.position
+                        if _quality(particle.best) > _quality(swarm.best):
+                            swarm.best = particle.best
             return output(problem, swarm.best)
 
         while True:
