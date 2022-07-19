@@ -31,28 +31,9 @@ def __quality(n: Size, position: Position) -> float:
     return (pow(n, 2) - len(__collisions(n, board))) * 100 / pow(n, 2)
 
 
-class __Terminate:
-    def __init__(self, steps: int):
-        self.steps = 0
-        self.limit = steps
-
-    def __collisions(self, n: Size, board: Board) -> list[Tuple[Row, Row]]:
-        """returns a list of colliding row pairs"""
-        return list(filter(partial(has_collision, board), row_pairs(n)))
-
-    def __quality(self, n: Size, position: Position) -> float:
-        board = Board(list(map(Column, map(floor, position))))
-        return (pow(n, 2) - len(self.__collisions(n, board))) * 100 / pow(n, 2)
-
-    def __call__(self, problem: int, position: Position) -> bool:
-        self.steps += 1
-        terminate = (
-            self.steps >= self.limit
-            or self.__quality(problem, position) == 100
-        )
-        if terminate:
-            self.steps = 0
-        return terminate
+def __terminate(n: Size, position: Position) -> bool:
+    board = Board(list(map(Column, map(floor, position))))
+    return len(__collisions(n, board)) == 0
 
 
 def __velocity(w: float, phi_p: float, phi_g: float):
@@ -82,7 +63,7 @@ particle_swarm = algorithm(
     __size,
     __ranges,
     __quality,
-    __Terminate(10000),
+    __terminate,
     __velocity(0.6, 1.5, 3),
     __output,
 )
