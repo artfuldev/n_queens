@@ -1,6 +1,6 @@
 from random import choice, random, shuffle
 from typing import Tuple
-from algorithms.solve import Solve
+
 from domain.board import (
     Board,
     Column,
@@ -87,12 +87,12 @@ def __cache_key(n: Size, board: Board) -> str:
     return cache_key(board)
 
 
-genetic: Solve[Size, Board] = algorithm(
+genetic = algorithm(
     __population,
     __fitness,
     __crossover,
     __mutate,
     __terminate,
     __cache_key,
-    accept=__accept,
+    __accept,
 )

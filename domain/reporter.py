@@ -1,5 +1,4 @@
-from typing import Callable
-from domain.board import Board
+from .board import Board
 
 summary = "size: {:3d}, solutions: {:5d}, time: {:8.3f}s, method: {:20s}, last: {}"
 

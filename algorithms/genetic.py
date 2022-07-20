@@ -66,9 +66,9 @@ def genetic(
     mutate: Callable[[P, C], C],
     terminate: Callable[[P, Individual[C], int], bool],
     key: Callable[[P, S], str],
+    accept: Callable[[P, S], bool] = __always,
     select: Callable[[P, list[Individual[C]]], Tuple[C, C]] = __select,
     output: Callable[[P, Individual[C]], S] = __candidate,
-    accept: Callable[[P, S], bool] = __always,
 ) -> Solve[P, S]:
     def optimize(problem: P) -> S:
         pop = population(problem)

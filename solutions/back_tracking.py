@@ -1,5 +1,5 @@
 from copy import copy
-from algorithms.solve import Solve
+
 from domain.board import (
     Board,
     Row,
@@ -28,6 +28,7 @@ def __reject(size: Size, board: Board) -> bool:
 def __accept(size: Size, board: Board) -> bool:
     return len(board) == size
 
+
 def __next(size: Size, board: Board) -> Board | None:
     filled = len(board)
     if filled > size:
@@ -41,10 +42,11 @@ def __next(size: Size, board: Board) -> Board | None:
         column = Column(column + 1)
     return None
 
+
 def __first(size: Size, board: Board) -> Board | None:
     seed = copy(board)
     seed.append(Column(-1))
     return __next(size, seed)
 
 
-back_tracking: Solve[Size, Board] = algorithm(__root, __reject, __accept, __first, __next)
+back_tracking = algorithm(__root, __reject, __accept, __first, __next)
