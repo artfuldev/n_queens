@@ -65,7 +65,7 @@ def genetic(
     crossover: Callable[[P, C, C], C],
     mutate: Callable[[P, C], C],
     terminate: Callable[[P, Individual[C], int], bool],
-    key: Callable[[P, C], str],
+    key: Callable[[P, S], str],
     select: Callable[[P, list[Individual[C]]], Tuple[C, C]] = __select,
     output: Callable[[P, Individual[C]], S] = __candidate,
     accept: Callable[[P, S], bool] = __always,
