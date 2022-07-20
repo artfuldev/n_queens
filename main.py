@@ -1,6 +1,7 @@
 from timeit import default_timer
 from algorithms.solve import Solve
 from domain.board import Board, Size
+from domain.problem import Problem
 from domain.report import Report, stringify
 from solutions.brute_force import brute_force
 from solutions.back_tracking import back_tracking
@@ -17,20 +18,28 @@ __solvers: dict[str, Solve[Size, Board]] = {
 }
 
 
-def find_solutions(size: int, count=1, until: int = None):
+def solve(problem: Problem):
+    started = default_timer()
+    generator = __solvers[problem.algorithm](problem.size)
+    solutions = list(islice(generator, problem.count))
+    ended = default_timer()
+    return Report(problem.algorithm, problem.size, solutions, ended - started)
+
+
+def find_solutions(algorithms: list[str], size: int, count=1, until: int = None):
     if count <= 0:
         raise
     stop = size + 1 if until is None else until + 1
     for i in range(size, stop):
         n = Size(i)
         n_count = count
-        for algorithm, solve in __solvers.items():
-            started = default_timer()
-            solutions = list(islice(solve(n), n_count))
-            n_count = len(solutions)
-            ended = default_timer()
-            yield Report(algorithm, n, solutions, ended - started)
+        for algorithm in algorithms:
+            report = solve(Problem(Size(n), algorithm, n_count))
+            n_count = len(report.solutions)
+            yield report
 
 
-for report in find_solutions(4, until=8):
+__algorithms = ["back_tracking", "genetic", "particle_swarm"]
+
+for report in find_solutions(__algorithms, 4, count=10, until=20):
     print(stringify(report))
