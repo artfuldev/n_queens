@@ -1,7 +1,7 @@
 from math import floor
 from random import random
-
 from numpy import array
+
 from algorithms.particle_swarm import (
     Particle,
     Position,
