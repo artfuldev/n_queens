@@ -1,8 +1,5 @@
-from functools import partial
-from itertools import islice
 from math import floor
 from random import random
-from typing import Tuple
 from algorithms.particle_swarm import (
     Particle,
     Position,
@@ -10,7 +7,7 @@ from algorithms.particle_swarm import (
     Velocity,
     particle_swarm as algorithm,
 )
-from domain.board import Column, Row, Size, Board, has_collision, row_pairs
+from domain.board import Column, Row, Size, Board, colliding_row_pairs
 
 
 def __size(n: Size) -> int:
@@ -21,14 +18,9 @@ def __ranges(n: Size) -> list[Range]:
     return [Range(0, n - 0.000000001) for _ in range(n)]
 
 
-def __collisions(n: Size, board: Board) -> list[Tuple[Row, Row]]:
-    """returns a list of colliding row pairs"""
-    return list(filter(partial(has_collision, board), row_pairs(n)))
-
-
 def __quality(n: Size, position: Position) -> float:
     board = Board(list(map(Column, map(floor, position))))
-    return (pow(n, 2) - len(__collisions(n, board))) * 100 / pow(n, 2)
+    return (pow(n, 2) - len(colliding_row_pairs(n, board))) * 100 / pow(n, 2)
 
 
 def __terminate(n: Size, position: Position) -> bool:

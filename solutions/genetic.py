@@ -1,8 +1,7 @@
-from functools import partial
 from random import choice, random, shuffle
 from typing import Generator, Set, Tuple
 from algorithms.solve import Solve
-from domain.board import Board, Column, Row, Size, has_collision, place_queen, row_pairs
+from domain.board import Board, Column, Row, Size, colliding_row_pairs, place_queen
 from algorithms.genetic import Individual, genetic as algorithm
 
 
@@ -18,11 +17,6 @@ def __population(n: Size) -> list[Board]:
     return [__board(n) for _ in range(n)]
 
 
-def __collisions(n: Size, board: Board) -> list[Tuple[Row, Row]]:
-    """returns a list of colliding row pairs"""
-    return list(filter(partial(has_collision, board), row_pairs(n)))
-
-
 def __hash(board: Board) -> str:
     """returns a hash of a board"""
     return "".join(map(str, board))
@@ -30,7 +24,7 @@ def __hash(board: Board) -> str:
 
 def __fitness(n: Size, board: Board) -> float:
     """returns the fitness of a board"""
-    return (pow(n, 2) - len(__collisions(n, board))) * 100 / pow(n, 2)
+    return (pow(n, 2) - len(colliding_row_pairs(n, board))) * 100 / pow(n, 2)
 
 
 def __crossover(n: Size, x: Board, y: Board) -> Board:
@@ -68,12 +62,12 @@ def __mutate(n: Size, board: Board) -> Board:
     chance = random()
     if chance >= mutation_probability:
         return board
-    colliding_row_pairs = __collisions(n, board)
-    if len(colliding_row_pairs) == 0:
+    pairs = colliding_row_pairs(n, board)
+    if len(pairs) == 0:
         return board
-    x, y = choice(colliding_row_pairs)
+    x, y = choice(pairs)
     not_x_or_y = lambda i: i not in (x, y)
-    y_choices = list(filter(not_x_or_y, __flatten(colliding_row_pairs)))
+    y_choices = list(filter(not_x_or_y, __flatten(pairs)))
     return board if not any(y_choices) else __swap(board, x, choice(y_choices))
 
 

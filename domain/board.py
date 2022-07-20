@@ -1,4 +1,5 @@
 from copy import copy
+from functools import partial
 from typing import Generator, NewType, Tuple
 
 Size = NewType("Size", int)
@@ -30,6 +31,9 @@ def row_pairs(size: Size) -> Generator[Tuple[Row, Row], None, None]:
         for y in range(size):
             if x != y:
                 yield Row(x), Row(y)
+
+def colliding_row_pairs(n: Size, board: Board) -> list[Tuple[Row, Row]]:
+    return list(filter(partial(has_collision, board), row_pairs(n)))
 
 
 def stringify(board: Board):
