@@ -1,5 +1,7 @@
 from math import floor
 from random import random
+
+from numpy import array
 from algorithms.particle_swarm import (
     Particle,
     Position,
@@ -28,20 +30,16 @@ def __terminate(n: Size, position: Position) -> bool:
 
 
 def __velocity(w: float, phi_p: float, phi_g: float):
-    def velocity(_: Size, particle: Particle, g_best: Position) -> Velocity:
-        x = particle.position
-        v = particle.velocity
-        p_best = particle.best
+    def velocity(_: Size, particle: Particle, best: Position) -> Velocity:
+        x = array(particle.position)
+        v = array(particle.velocity)
+        p_best = array(particle.best)
         r_p = random()
+        g_best = array(best)
         r_g = random()
-        next_v = []
-        for d in range(len(v)):
-            next_v.append(
-                (w * v[d])
-                + (phi_p * r_p * (p_best[d] - x[d]))
-                + (phi_g * r_g * (g_best[d] - x[d]))
-            )
-        return Velocity(next_v)
+        return Velocity(
+            list((w * v) + (phi_p * r_p * (p_best - x)) + (phi_g * r_g * (g_best - x)))
+        )
 
     return velocity
 
@@ -49,8 +47,10 @@ def __velocity(w: float, phi_p: float, phi_g: float):
 def __output(_: Size, position: Position) -> Board:
     return Board(list(map(Column, map(floor, position))))
 
+
 def __cache_key(_: Size, board: Board) -> str:
     return cache_key(board)
+
 
 particle_swarm = algorithm(
     __size,
@@ -59,5 +59,5 @@ particle_swarm = algorithm(
     __terminate,
     __velocity(0.6, 1.5, 3),
     __output,
-    __cache_key
+    __cache_key,
 )
