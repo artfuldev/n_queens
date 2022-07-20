@@ -13,7 +13,7 @@ from domain.board import Column, Size, Board, cache_key, colliding_row_pairs
 
 
 def __size(n: Size) -> int:
-    return n
+    return n * n
 
 
 def __ranges(n: Size) -> list[Range]:
