@@ -75,8 +75,10 @@ def __terminate(n: Size, individual: Individual[Board], generation: int) -> bool
     """returns True if the algorithm should terminate"""
     return generation == n * 1000 or individual.fitness == 100
 
+
 def __accept(n: Size, board: Board) -> bool:
     return __fitness(n, board) == 100
+
 
 genetic: Solve[Size, Board] = algorithm(
     __population, __fitness, __crossover, __mutate, __terminate, __key, accept=__accept
