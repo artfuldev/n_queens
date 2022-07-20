@@ -26,6 +26,7 @@ S: TypeAlias = Solution
 class Individual(Generic[Candidate]):
     candidate: Candidate
     fitness: float
+    generation: int
 
 
 def individual_candidate(individual: Individual[C]):
@@ -50,13 +51,12 @@ def __select(_: P, population: list[Individual[C]]) -> Tuple[C, C]:
     )
 
 
-@dataclass(frozen=True)
-class Result(Individual[Candidate]):
-    generations: int
+def __candidate(_: P, individual: Individual[C]) -> C:
+    return individual.candidate
 
 
-def __result(_: P, individual: Individual[C], generations: int) -> Result[C]:
-    return Result(individual.candidate, individual.fitness, generations)
+def __always(_: P, s: Solution) -> bool:
+    return True
 
 
 def genetic(
@@ -65,31 +65,41 @@ def genetic(
     crossover: Callable[[P, C, C], C],
     mutate: Callable[[P, C], C],
     terminate: Callable[[P, Individual[C], int], bool],
+    key: Callable[[P, C], str],
     select: Callable[[P, list[Individual[C]]], Tuple[C, C]] = __select,
-    output: Callable[[P, Individual[C], int], S] = __result,
+    output: Callable[[P, Individual[C]], S] = __candidate,
+    accept: Callable[[P, S], bool] = __always,
 ) -> Solve[P, S]:
     def solve(problem: P) -> Generator[S, None, None]:
-        def solve_one(problem: P, population: list[C], generation: int) -> S:
+        def solve_one(problem: P, population: list[C], generation: int) -> S | None:
             population_count = len(population)
             gene_pool = list(
-                map(lambda c: Individual(c, fitness(problem, c)), population)
+                map(lambda c: Individual(c, fitness(problem, c), generation), population)
             )
             while True:
                 for individual in gene_pool:
                     if terminate(problem, individual, generation):
-                        return output(problem, individual, generation)
+                        candidate = output(problem, individual)
+                        return candidate if accept(problem, candidate) else None
                 next_gene_pool = []
-                for i in range(population_count):
+                generation += 1
+                for _ in range(population_count):
                     parent_1, parent_2 = select(problem, gene_pool)
                     child = crossover(problem, parent_1, parent_2)
                     mutated = mutate(problem, child)
                     next_gene_pool.append(
-                        Individual(mutated, fitness(problem, mutated))
+                        Individual(mutated, fitness(problem, mutated), generation)
                     )
                 gene_pool = next_gene_pool
-                generation += 1
 
+        cached_keys: set[str] = set()
         while True:
-            yield solve_one(problem, population(problem), 1)
+            solution = solve_one(problem, population(problem), 1)
+            if solution is None:
+                continue
+            solution_key = key(problem, solution)
+            if solution_key not in cached_keys:
+                cached_keys.add(solution_key)
+                yield solution
 
     return solve

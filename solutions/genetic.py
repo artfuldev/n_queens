@@ -17,7 +17,7 @@ def __population(n: Size) -> list[Board]:
     return [__board(n) for _ in range(n)]
 
 
-def __hash(board: Board) -> str:
+def __key(_: Size, board: Board) -> str:
     """returns a hash of a board"""
     return "".join(map(str, board))
 
@@ -75,20 +75,9 @@ def __terminate(n: Size, individual: Individual[Board], generation: int) -> bool
     """returns True if the algorithm should terminate"""
     return generation == n * 1000 or individual.fitness == 100
 
+def __accept(n: Size, board: Board) -> bool:
+    return __fitness(n, board) == 100
 
-__algorithm: Solve[Size, Individual[Board]] = algorithm(
-    __population, __fitness, __crossover, __mutate, __terminate
+genetic: Solve[Size, Board] = algorithm(
+    __population, __fitness, __crossover, __mutate, __terminate, __key, accept=__accept
 )
-
-
-def __genetic(n: Size) -> Generator[Board, None, None]:
-    """returns a generator of boards using the genetic algorithm"""
-    uniques: Set[str] = set()
-    for individual in __algorithm(n):
-        candidate_hash = __hash(individual.candidate)
-        if individual.fitness >= 100 and candidate_hash not in uniques:
-            uniques.add(candidate_hash)
-            yield individual.candidate
-
-
-genetic: Solve[Size, Board] = lambda n: __genetic(n)
