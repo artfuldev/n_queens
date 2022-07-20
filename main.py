@@ -32,4 +32,4 @@ def find_solutions(size: int, count=1, until: int = None, report=report):
             print(report(n, ended - started, name, solutions))
 
 
-find_solutions(4, until=8)
+find_solutions(4, count=pow(2, 30), until=8)
