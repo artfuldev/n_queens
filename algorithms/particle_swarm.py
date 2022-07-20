@@ -78,7 +78,7 @@ def particle_swarm(
     accept: Callable[[Problem, Solution], bool] = __always,
 ) -> Solve[Problem, Solution]:
     def solve(problem: Problem):
-        def solve_one(problem: Problem) -> Solution | None:
+        def solve_one(problem: Problem) -> Solution:
             _size = size(problem)
             _limits = ranges(problem)
 
@@ -97,13 +97,12 @@ def particle_swarm(
                         particle.best = particle.position
                         if _quality(particle.best) > _quality(swarm.best):
                             swarm.best = particle.best
-            solution = output(problem, swarm.best)
-            return solution if accept(problem, solution) else None
+            return output(problem, swarm.best)
 
         cached_keys: set[str] = set()
         while True:
             solution = solve_one(problem)
-            if solution is None:
+            if not accept(problem, solution):
                 continue
             solution_key = key(problem, solution)
             if solution_key not in cached_keys:

@@ -71,7 +71,7 @@ def genetic(
     accept: Callable[[P, S], bool] = __always,
 ) -> Solve[P, S]:
     def solve(problem: P) -> Generator[S, None, None]:
-        def solve_one(problem: P, population: list[C], generation: int) -> S | None:
+        def solve_one(problem: P, population: list[C], generation: int) -> S:
             population_count = len(population)
             gene_pool = list(
                 map(lambda c: Individual(c, fitness(problem, c), generation), population)
@@ -79,8 +79,7 @@ def genetic(
             while True:
                 for individual in gene_pool:
                     if terminate(problem, individual, generation):
-                        candidate = output(problem, individual)
-                        return candidate if accept(problem, candidate) else None
+                        return output(problem, individual)
                 next_gene_pool = []
                 generation += 1
                 for _ in range(population_count):
@@ -95,7 +94,7 @@ def genetic(
         cached_keys: set[str] = set()
         while True:
             solution = solve_one(problem, population(problem), 1)
-            if solution is None:
+            if not accept(problem, solution):
                 continue
             solution_key = key(problem, solution)
             if solution_key not in cached_keys:
