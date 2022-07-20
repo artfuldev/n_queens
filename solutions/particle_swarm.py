@@ -7,7 +7,7 @@ from algorithms.particle_swarm import (
     Velocity,
     particle_swarm as algorithm,
 )
-from domain.board import Column, Row, Size, Board, colliding_row_pairs
+from domain.board import Column, Size, Board, cache_key, colliding_row_pairs
 
 
 def __size(n: Size) -> int:
@@ -46,9 +46,11 @@ def __velocity(w: float, phi_p: float, phi_g: float):
     return velocity
 
 
-def __output(_: int, position: Position) -> Board:
+def __output(_: Size, position: Position) -> Board:
     return Board(list(map(Column, map(floor, position))))
 
+def __cache_key(_: Size, board: Board) -> str:
+    return cache_key(board)
 
 particle_swarm = algorithm(
     __size,
@@ -57,4 +59,5 @@ particle_swarm = algorithm(
     __terminate,
     __velocity(0.6, 1.5, 3),
     __output,
+    __cache_key
 )

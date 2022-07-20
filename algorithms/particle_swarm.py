@@ -63,6 +63,10 @@ def __initialize(
     return swarm
 
 
+def __always(problem: Problem, solution: Solution) -> bool:
+    return True
+
+
 def particle_swarm(
     size: Callable[[Problem], int],
     ranges: Callable[[Problem], List[Range]],
@@ -70,9 +74,11 @@ def particle_swarm(
     terminate: Callable[[Problem, Position], bool],
     velocity: Callable[[Problem, Particle, Position], Velocity],
     output: Callable[[Problem, Position], Solution],
+    key: Callable[[Problem, Solution], str],
+    accept: Callable[[Problem, Solution], bool] = __always,
 ) -> Solve[Problem, Solution]:
     def solve(problem: Problem):
-        def solve_one(problem: Problem):
+        def solve_one(problem: Problem) -> Solution | None:
             _size = size(problem)
             _limits = ranges(problem)
 
@@ -84,14 +90,24 @@ def particle_swarm(
                 for i in range(_size):
                     particle = swarm.particles[i]
                     particle.velocity = velocity(problem, particle, swarm.best)
-                    particle.position = __move(_limits, particle.position, particle.velocity)
+                    particle.position = __move(
+                        _limits, particle.position, particle.velocity
+                    )
                     if _quality(particle.position) > _quality(particle.best):
                         particle.best = particle.position
                         if _quality(particle.best) > _quality(swarm.best):
                             swarm.best = particle.best
-            return output(problem, swarm.best)
+            solution = output(problem, swarm.best)
+            return solution if accept(problem, solution) else None
 
+        cached_keys: set[str] = set()
         while True:
-            yield solve_one(problem)
+            solution = solve_one(problem)
+            if solution is None:
+                continue
+            solution_key = key(problem, solution)
+            if solution_key not in cached_keys:
+                cached_keys.add(solution_key)
+                yield solution
 
     return solve

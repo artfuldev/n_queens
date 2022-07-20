@@ -1,7 +1,15 @@
 from random import choice, random, shuffle
-from typing import Generator, Set, Tuple
+from typing import Tuple
 from algorithms.solve import Solve
-from domain.board import Board, Column, Row, Size, colliding_row_pairs, place_queen
+from domain.board import (
+    Board,
+    Column,
+    Row,
+    Size,
+    cache_key,
+    colliding_row_pairs,
+    place_queen,
+)
 from algorithms.genetic import Individual, genetic as algorithm
 
 
@@ -15,11 +23,6 @@ def __board(n: Size) -> Board:
 def __population(n: Size) -> list[Board]:
     """returns a random population of n boards"""
     return [__board(n) for _ in range(n)]
-
-
-def __key(_: Size, board: Board) -> str:
-    """returns a hash of a board"""
-    return "".join(map(str, board))
 
 
 def __fitness(n: Size, board: Board) -> float:
@@ -80,6 +83,16 @@ def __accept(n: Size, board: Board) -> bool:
     return __fitness(n, board) == 100
 
 
+def __cache_key(n: Size, board: Board) -> str:
+    return cache_key(board)
+
+
 genetic: Solve[Size, Board] = algorithm(
-    __population, __fitness, __crossover, __mutate, __terminate, __key, accept=__accept
+    __population,
+    __fitness,
+    __crossover,
+    __mutate,
+    __terminate,
+    __cache_key,
+    accept=__accept,
 )
