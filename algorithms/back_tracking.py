@@ -1,6 +1,6 @@
 from typing import Callable, Generator, TypeVar
 
-from algorithms.solve import Solve
+from .solve import Solve
 
 Candidate = TypeVar("Candidate")
 Problem = TypeVar("Problem")

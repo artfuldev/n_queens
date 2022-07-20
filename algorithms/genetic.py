@@ -2,16 +2,15 @@ from dataclasses import dataclass
 from random import choices
 from typing import (
     Callable,
-    Generator,
     Generic,
     Tuple,
     TypeAlias,
     TypeVar,
     cast,
 )
-from algorithms.from_optimizer import from_optimizer
 
-from algorithms.solve import Solve
+from .from_optimizer import from_optimizer
+from .solve import Solve
 
 
 Candidate = TypeVar("Candidate")

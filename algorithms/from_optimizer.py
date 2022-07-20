@@ -1,5 +1,6 @@
 from typing import Callable
-from algorithms.solve import Problem, Solution, Solve
+
+from .solve import Problem, Solution, Solve
 
 
 def from_optimizer(
