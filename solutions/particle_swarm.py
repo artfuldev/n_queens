@@ -28,7 +28,7 @@ def __terminate(n: Size, position: Position) -> bool:
 
 
 def __velocity(w: float, phi_p: float, phi_g: float):
-    def velocity(_: int, particle: Particle, g_best: Position) -> Velocity:
+    def velocity(_: Size, particle: Particle, g_best: Position) -> Velocity:
         x = particle.position
         v = particle.velocity
         p_best = particle.best
