@@ -60,29 +60,28 @@ def __always(_: P, s: Solution) -> bool:
 
 
 def genetic(
-    population: Callable[[P], list[C]],
+    populate: Callable[[P], list[C]],
     fitness: Callable[[P, C], float],
     crossover: Callable[[P, C, C], C],
     mutate: Callable[[P, C], C],
-    terminate: Callable[[P, Individual[C], int], bool],
+    terminate: Callable[[P, list[Individual[C]], int], bool],
     key: Callable[[P, S], str],
     accept: Callable[[P, S], bool] = __always,
     select: Callable[[P, list[Individual[C]]], Tuple[C, C]] = __select,
     output: Callable[[P, Individual[C]], S] = __candidate,
 ) -> Solve[P, S]:
     def optimize(problem: P) -> S:
-        pop = population(problem)
+        population = populate(problem)
         generation = 1
-        population_count = len(pop)
-        gene_pool = list(
-            map(lambda c: Individual(c, fitness(problem, c), generation), pop)
+        population_count = len(population)
+        gene_pool = sorted(
+            map(lambda c: Individual(c, fitness(problem, c), generation), population),
+            key=individual_fitness,
+            reverse=True,
         )
-        while True:
-            for individual in gene_pool:
-                if terminate(problem, individual, generation):
-                    return output(problem, individual)
-            next_gene_pool = []
+        while not terminate(problem, gene_pool, generation):
             generation += 1
+            next_gene_pool: list[Individual[C]] = []
             for _ in range(population_count):
                 parent_1, parent_2 = select(problem, gene_pool)
                 child = crossover(problem, parent_1, parent_2)
@@ -90,6 +89,7 @@ def genetic(
                 next_gene_pool.append(
                     Individual(mutated, fitness(problem, mutated), generation)
                 )
-            gene_pool = next_gene_pool
+            gene_pool = sorted(next_gene_pool, key=individual_fitness, reverse=True)
+        return output(problem, gene_pool[0])
 
     return from_optimizer(key, accept, optimize)

@@ -10,7 +10,7 @@ from domain.board import (
     colliding_row_pairs,
     place_queen,
 )
-from algorithms.genetic import Individual, genetic as algorithm
+from algorithms.genetic import Individual, genetic as algorithm, individual_fitness
 
 
 def __board(n: Size) -> Board:
@@ -74,9 +74,9 @@ def __mutate(n: Size, board: Board) -> Board:
     return board if not any(y_choices) else __swap(board, x, choice(y_choices))
 
 
-def __terminate(n: Size, individual: Individual[Board], generation: int) -> bool:
+def __terminate(n: Size, population: list[Individual[Board]], generation: int) -> bool:
     """returns True if the algorithm should terminate"""
-    return generation == n * 1000 or individual.fitness == 100
+    return generation == n * 1000 or any(filter(lambda f: f == 100, map(individual_fitness, population)))
 
 
 def __accept(n: Size, board: Board) -> bool:
