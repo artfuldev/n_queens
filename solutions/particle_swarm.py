@@ -1,4 +1,4 @@
-from math import floor
+from math import floor, factorial
 from random import random
 from numpy import array
 
@@ -12,17 +12,35 @@ from algorithms.particle_swarm import (
 from domain.board import Column, Size, Board, cache_key, colliding_row_pairs
 
 
+def __nth_permutation(s: Size, n: int) -> list[int]:
+    items = list(range(s))
+    res: list[int] = []
+    for x in range(s - 1, -1, -1):
+        f = factorial(x)
+        d = n // f
+        n -= d * f
+        res.append(items[d])
+        del items[d]
+    return res
+
+
 def __size(n: Size) -> int:
     return n
 
-
 def __ranges(n: Size) -> list[Range]:
-    return [Range(0, n - 0.000000001) for _ in range(n)]
+    return [Range(0, factorial(n) - 0.000000001)]
 
 
-def __quality(n: Size, position: Position) -> float:
-    board = Board(list(map(Column, map(floor, position))))
-    return (pow(n, 2) - len(colliding_row_pairs(n, board))) * 100 / pow(n, 2)
+def __board(s: Size, position: Position) -> Board:
+    return Board(list(map(Column, __nth_permutation(s, floor(position[0])))))
+
+
+def __quality(s: Size, position: Position) -> float:
+    return (
+        (pow(s, 2) - len(colliding_row_pairs(s, __board(s, position))))
+        * 100
+        / pow(s, 2)
+    )
 
 
 def __terminate(n: Size, position: Position) -> bool:
@@ -44,10 +62,6 @@ def __velocity(w: float, phi_p: float, phi_g: float):
     return velocity
 
 
-def __output(_: Size, position: Position) -> Board:
-    return Board(list(map(Column, map(floor, position))))
-
-
 def __cache_key(_: Size, board: Board) -> str:
     return cache_key(board)
 
@@ -58,6 +72,6 @@ particle_swarm = algorithm(
     __quality,
     __terminate,
     __velocity(0.6, 1.5, 3),
-    __output,
+    __board,
     __cache_key,
 )
