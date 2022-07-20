@@ -9,6 +9,7 @@ from typing import (
     TypeVar,
     cast,
 )
+from algorithms.from_optimizer import from_optimizer
 
 from algorithms.solve import Solve
 
@@ -70,35 +71,26 @@ def genetic(
     output: Callable[[P, Individual[C]], S] = __candidate,
     accept: Callable[[P, S], bool] = __always,
 ) -> Solve[P, S]:
-    def solve(problem: P) -> Generator[S, None, None]:
-        def solve_one(problem: P, population: list[C], generation: int) -> S:
-            population_count = len(population)
-            gene_pool = list(
-                map(lambda c: Individual(c, fitness(problem, c), generation), population)
-            )
-            while True:
-                for individual in gene_pool:
-                    if terminate(problem, individual, generation):
-                        return output(problem, individual)
-                next_gene_pool = []
-                generation += 1
-                for _ in range(population_count):
-                    parent_1, parent_2 = select(problem, gene_pool)
-                    child = crossover(problem, parent_1, parent_2)
-                    mutated = mutate(problem, child)
-                    next_gene_pool.append(
-                        Individual(mutated, fitness(problem, mutated), generation)
-                    )
-                gene_pool = next_gene_pool
-
-        cached_keys: set[str] = set()
+    def optimize(problem: P) -> S:
+        pop = population(problem)
+        generation = 1
+        population_count = len(pop)
+        gene_pool = list(
+            map(lambda c: Individual(c, fitness(problem, c), generation), pop)
+        )
         while True:
-            solution = solve_one(problem, population(problem), 1)
-            if not accept(problem, solution):
-                continue
-            solution_key = key(problem, solution)
-            if solution_key not in cached_keys:
-                cached_keys.add(solution_key)
-                yield solution
+            for individual in gene_pool:
+                if terminate(problem, individual, generation):
+                    return output(problem, individual)
+            next_gene_pool = []
+            generation += 1
+            for _ in range(population_count):
+                parent_1, parent_2 = select(problem, gene_pool)
+                child = crossover(problem, parent_1, parent_2)
+                mutated = mutate(problem, child)
+                next_gene_pool.append(
+                    Individual(mutated, fitness(problem, mutated), generation)
+                )
+            gene_pool = next_gene_pool
 
-    return solve
+    return from_optimizer(key, accept, optimize)

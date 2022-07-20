@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from random import uniform
 from typing import Callable, List, NewType, TypeVar
+from algorithms.from_optimizer import from_optimizer
 from algorithms.solve import Solve
 
 Problem = TypeVar("Problem")
@@ -77,8 +78,7 @@ def particle_swarm(
     key: Callable[[Problem, Solution], str],
     accept: Callable[[Problem, Solution], bool] = __always,
 ) -> Solve[Problem, Solution]:
-    def solve(problem: Problem):
-        def solve_one(problem: Problem) -> Solution:
+        def optimize(problem: Problem) -> Solution:
             _size = size(problem)
             _limits = ranges(problem)
 
@@ -98,15 +98,4 @@ def particle_swarm(
                         if _quality(particle.best) > _quality(swarm.best):
                             swarm.best = particle.best
             return output(problem, swarm.best)
-
-        cached_keys: set[str] = set()
-        while True:
-            solution = solve_one(problem)
-            if not accept(problem, solution):
-                continue
-            solution_key = key(problem, solution)
-            if solution_key not in cached_keys:
-                cached_keys.add(solution_key)
-                yield solution
-
-    return solve
+        return from_optimizer(key, accept, optimize)
