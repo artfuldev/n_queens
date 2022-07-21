@@ -82,10 +82,10 @@ def __next(inertia: float, cognitive_coefficient: float, social_coefficient: flo
     return next_velocity
 
 
-def __apply(n: Size, board: Board, row_pair: Tuple[Row, Row] | None):
-    if row_pair is None:
+def __move(n: Size, board: Board, velocity: Velocity):
+    if velocity is None:
         return board
-    x, y = row_pair
+    x, y = velocity
     return swap(board, x, y)
 
 
@@ -100,6 +100,6 @@ particle_swarm = algorithm(
     __terminate,
     __plan,
     __next(0.8, 0.5, 1.5),
-    __apply,
+    __move,
     __cache_key,
 )

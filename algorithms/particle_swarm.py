@@ -49,7 +49,7 @@ def particle_swarm(
     terminate: Callable[[Problem, Position], bool],
     plan: Callable[[Problem, Trip[Position]], Velocity],
     next: Callable[[Problem, Velocities[Velocity]], Velocity],
-    apply: Callable[[Problem, Position, Velocity], Position],
+    move: Callable[[Problem, Position, Velocity], Position],
     key: Callable[[Problem, Solution], str],
     output: Callable[[Problem, Position], Solution] = __position,
     accept: Callable[[Problem, Solution], bool] = __always,
@@ -72,7 +72,7 @@ def particle_swarm(
                         plan(problem, Trip(particle.position, global_best)),
                     ),
                 )
-                particle.position = apply(problem, particle.position, particle.velocity)
+                particle.position = move(problem, particle.position, particle.velocity)
                 particle.best = best((particle.position, particle.best))
                 global_best = best((particle.best, global_best))
         return output(problem, global_best)
