@@ -1,7 +1,7 @@
 from functools import reduce
 from random import choice, choices, randint, shuffle
 from typing import Optional, Tuple, cast
-from algorithms.particle_swarm import Trip, Components, particle_swarm as algorithm
+from algorithms.particle_swarm import Trip, Velocities, particle_swarm as algorithm
 from domain.board import (
     Column,
     Row,
@@ -74,10 +74,10 @@ def __plan(n: Size, trip: Trip[Board]) -> Velocity:
 
 def __next(inertia: float, cognitive_coefficient: float, social_coefficient: float):
     def next_velocity(
-        n: Size, components: Components[Tuple[Row, Row] | None]
+        n: Size, velocities: Velocities[Tuple[Row, Row] | None]
     ) -> Velocity:
         optional_velocity = choices(
-            (components.inertial, components.cognitive, components.social),
+            (velocities.inertial, velocities.cognitive, velocities.social),
             (inertia, cognitive_coefficient, social_coefficient),
             k=1,
         )[0]
