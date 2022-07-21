@@ -55,25 +55,24 @@ def __pair(n: Size) -> Tuple[Row, Row]:
 
 
 def __plan(n: Size, trip: Trip[Board]) -> Tuple[Row, Row] | None:
-    def distance(board: Board):
-        return __distance(n, board, trip.destination)
 
-    _distance = distance(trip.source)
-    if _distance == 0:
+    if trip.source == trip.destination:
         return None
-    seen: Set[Tuple[int, int]] = set()
-    velocity = __velocity(n, trip.source)
-    if velocity is not None:
-        seen.add(velocity)
-    x, y = __pair(n) if velocity is None else velocity
-    next_distance = distance(swap(trip.source, x, y))
-    while next_distance > _distance:
-        velocity = __velocity(n, trip.source)
-        x, y = __pair(n) if velocity is None or velocity in seen else velocity
-        if velocity is not None:
-            seen.add(velocity)
-        next_distance = distance(swap(trip.source, x, y))
-    return x, y
+
+    # 2 0 3 1 4
+    # 1 3 2 0 4 | swaps: (0, 3), (1, 2), (2, 0), (3, 1)
+    # 1 0 3 2 4 | swaps: (0, 3)
+    reverse_index: dict[int, int] = {}
+    for i in range(n):
+        reverse_index[trip.destination[i]] = i
+    candidates = list(range(n))
+    shuffle(candidates)
+    for i in candidates:
+        x = Row(i)
+        y = Row(reverse_index[trip.source[i]])
+        if x != y:
+            return (x, y)
+    return None
 
 
 def __next(inertia: float, cognitive_coefficient: float, social_coefficient: float):
