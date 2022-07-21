@@ -39,7 +39,7 @@ def find_solutions(algorithms: list[str], size: int, count=1, until: int = None)
             yield report
 
 
-__algorithms = ["back_tracking", "genetic"]
+__algorithms = ["back_tracking", "genetic", "particle_swarm"]
 
 for report in find_solutions(__algorithms, 4, count=10, until=20):
     print(stringify(report))
