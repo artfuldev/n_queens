@@ -1,6 +1,6 @@
 from random import choice, choices, shuffle
 from typing import Tuple, cast
-from algorithms.particle_swarm import Positions, Components, particle_swarm as algorithm
+from algorithms.particle_swarm import Plan, Components, particle_swarm as algorithm
 from domain.board import Column, Row, Size, Board, cache_key, colliding_row_pairs, swap
 from domain.list import flatten, unique
 
@@ -35,13 +35,13 @@ def __terminate(n: Size, board: Board) -> bool:
     return __quality(n, board) == 100
 
 
-def __cognitive(n: Size, positions: Positions[Board]) -> Tuple[Row, Row]:
+def __cognitive(n: Size, positions: Plan[Board]) -> Tuple[Row, Row]:
     pass
 
-def __social(n: Size, positions: Positions[Board]) -> Tuple[Row, Row]:
+def __social(n: Size, positions: Plan[Board]) -> Tuple[Row, Row]:
     pass
 
-def __next(n: Size, components: Components[Tuple[Row, Row]]):
+def __next(n: Size, components: Components[Tuple[Row, Row]]) -> Tuple[Row, Row]:
     pass
 
 def __apply(n: Size, board: Board, row_pair: Tuple[Row, Row]):

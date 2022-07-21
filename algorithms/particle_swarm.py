@@ -37,9 +37,9 @@ class Components(Generic[Velocity]):
 
 
 @dataclass(frozen=True)
-class Positions(Generic[Position]):
-    current: Position
-    best: Position
+class Plan(Generic[Position]):
+    source: Position
+    destination: Position
 
 
 def particle_swarm(
@@ -47,8 +47,8 @@ def particle_swarm(
     velocity: Callable[[Problem, Position], Velocity],
     quality: Callable[[Problem, Position], float],
     terminate: Callable[[Problem, Position], bool],
-    cognitive: Callable[[Problem, Positions[Position]], Velocity],
-    social: Callable[[Problem, Positions[Position]], Velocity],
+    cognitive: Callable[[Problem, Plan[Position]], Velocity],
+    social: Callable[[Problem, Plan[Position]], Velocity],
     next: Callable[[Problem, Components[Velocity]], Velocity],
     apply: Callable[[Problem, Position, Velocity], Position],
     key: Callable[[Problem, Solution], str],
@@ -69,8 +69,8 @@ def particle_swarm(
                     problem,
                     Components(
                         particle.velocity,
-                        cognitive(problem, Positions(particle.position, particle.best)),
-                        social(problem, Positions(particle.position, best)),
+                        cognitive(problem, Plan(particle.position, particle.best)),
+                        social(problem, Plan(particle.position, best)),
                     ),
                 )
                 particle.position = apply(problem, particle.position, particle.velocity)
