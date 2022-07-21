@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from functools import partial
-from typing import Callable, Generic, TypeVar
+from typing import Callable, Generic, Iterable, TypeVar
 
 from .from_optimizer import from_optimizer
 from .solve import Problem, Solve
@@ -55,34 +55,26 @@ def particle_swarm(
     accept: Callable[[Problem, Solution], bool] = __always,
 ) -> Solve[Problem, Solution]:
     def optimize(problem: Problem) -> Solution:
+        def best(positions: Iterable[Position]):
+            return max(positions, key=partial(quality, problem))
+
         particles = list(
             map(lambda p: __particle(p, velocity(problem, p)), first(problem))
         )
-        best = max(
-            map(lambda particle: particle.best, particles),
-            key=partial(quality, problem),
-        )
-        while not terminate(problem, best):
+        global_best = best(map(lambda particle: particle.best, particles))
+        while not terminate(problem, global_best):
             for particle in particles:
                 particle.velocity = next(
                     problem,
                     Components(
                         particle.velocity,
                         plan(problem, Trip(particle.position, particle.best)),
-                        plan(problem, Trip(particle.position, best)),
+                        plan(problem, Trip(particle.position, global_best)),
                     ),
                 )
                 particle.position = apply(problem, particle.position, particle.velocity)
-                particle.best = max(
-                    particle.position,
-                    particle.best,
-                    key=partial(quality, problem),
-                )
-                best = max(
-                    particle.best,
-                    best,
-                    key=partial(quality, problem),
-                )
-        return output(problem, best)
+                particle.best = best((particle.position, particle.best))
+                global_best = best((particle.best, global_best))
+        return output(problem, global_best)
 
     return from_optimizer(key, accept, optimize)
