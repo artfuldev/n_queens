@@ -1,4 +1,5 @@
 from copy import copy
+from typing import Optional
 
 from domain.board import (
     Board,
@@ -12,7 +13,7 @@ from domain.board import (
 from algorithms.back_tracking import back_tracking as algorithm
 
 
-def __root(_: Size) -> Board | None:
+def __root(_: Size) -> Optional[Board]:
     return Board([])
 
 
@@ -29,7 +30,7 @@ def __accept(size: Size, board: Board) -> bool:
     return len(board) == size
 
 
-def __next(size: Size, board: Board) -> Board | None:
+def __next(size: Size, board: Board) -> Optional[Board]:
     filled = len(board)
     if filled > size:
         return None
@@ -43,7 +44,7 @@ def __next(size: Size, board: Board) -> Board | None:
     return None
 
 
-def __first(size: Size, board: Board) -> Board | None:
+def __first(size: Size, board: Board) -> Optional[Board]:
     seed = copy(board)
     seed.append(Column(-1))
     return __next(size, seed)

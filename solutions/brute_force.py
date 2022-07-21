@@ -1,5 +1,6 @@
 from copy import copy
 from functools import partial
+from typing import Optional
 
 from domain.board import Board, Column, Size, has_collision, row_pairs
 from algorithms.brute_force import brute_force as algorithm
@@ -23,11 +24,11 @@ def __next_permutation(board: Board) -> Board:
     return rows
 
 
-def __first(size: Size) -> Board | None:
+def __first(size: Size) -> Optional[Board]:
     return Board(list(map(Column, range(size)))) if size > 3 else None
 
 
-def __next(size: Size, board: Board) -> Board | None:
+def __next(size: Size, board: Board) -> Optional[Board]:
     next = __next_permutation(board)
     return None if next == __first(size) else next
 

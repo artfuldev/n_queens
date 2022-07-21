@@ -1,4 +1,4 @@
-from typing import Callable, TypeVar, Any
+from typing import Callable, TypeVar, Any, Optional
 
 from .solve import Solve
 
@@ -8,8 +8,8 @@ Solution = TypeVar("Solution")
 
 
 def brute_force(
-    first: Callable[[Problem], Candidate | None],
-    next: Callable[[Problem, Candidate], Candidate | None],
+    first: Callable[[Problem], Optional[Candidate]],
+    next: Callable[[Problem, Candidate], Optional[Candidate]],
     accept: Callable[[Problem, Candidate], bool],
     output: Callable[[Problem, Candidate], Solution],
 ) -> Solve[Problem, Solution]:

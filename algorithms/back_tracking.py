@@ -1,4 +1,4 @@
-from typing import Callable, Generator, TypeVar
+from typing import Callable, Generator, TypeVar, Optional
 
 from .solve import Solve
 
@@ -8,11 +8,11 @@ Solution = TypeVar("Solution")
 
 
 def back_tracking(
-    root: Callable[[Problem], Candidate | None],
+    root: Callable[[Problem], Optional[Candidate]],
     reject: Callable[[Problem, Candidate], bool],
     accept: Callable[[Problem, Candidate], bool],
-    first: Callable[[Problem, Candidate], Candidate | None],
-    next: Callable[[Problem, Candidate], Candidate | None],
+    first: Callable[[Problem, Candidate], Optional[Candidate]],
+    next: Callable[[Problem, Candidate], Optional[Candidate]],
     output: Callable[[Problem, Candidate], Solution],
 ) -> Solve[Problem, Solution]:
     def extend(
