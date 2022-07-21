@@ -49,4 +49,8 @@ def __first(size: Size, board: Board) -> Board | None:
     return __next(size, seed)
 
 
-back_tracking = algorithm(__root, __reject, __accept, __first, __next)
+def __output(_: Size, board: Board) -> Board:
+    return board
+
+
+back_tracking = algorithm(__root, __reject, __accept, __first, __next, __output)

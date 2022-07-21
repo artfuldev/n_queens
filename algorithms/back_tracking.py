@@ -7,16 +7,13 @@ Problem = TypeVar("Problem")
 Solution = TypeVar("Solution")
 
 
-def __identity(_: Problem, candidate: Candidate):
-    return candidate
-
 def back_tracking(
     root: Callable[[Problem], Candidate | None],
     reject: Callable[[Problem, Candidate], bool],
     accept: Callable[[Problem, Candidate], bool],
     first: Callable[[Problem, Candidate], Candidate | None],
     next: Callable[[Problem, Candidate], Candidate | None],
-    output: Callable[[Problem, Candidate], Solution] = __identity,
+    output: Callable[[Problem, Candidate], Solution],
 ) -> Solve[Problem, Solution]:
     def extend(
         problem: Problem, candidate: Candidate
