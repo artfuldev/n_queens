@@ -1,6 +1,6 @@
 from functools import reduce
 from random import choice, choices, randint, shuffle
-from typing import Set, Tuple, cast
+from typing import Optional, Tuple, cast
 from algorithms.particle_swarm import Trip, Components, particle_swarm as algorithm
 from domain.board import (
     Column,
@@ -13,6 +13,8 @@ from domain.board import (
 )
 from domain.list import flatten, unique
 
+Velocity = Optional[Tuple[Row, Row]]
+
 
 def __board(n: Size) -> Board:
     board = Board(list(map(Column, range(n))))
@@ -24,7 +26,7 @@ def __first(n: Size) -> list[Board]:
     return [__board(n) for _ in range(n)]
 
 
-def __velocity(n: Size, board: Board) -> Tuple[Row, Row] | None:
+def __velocity(n: Size, board: Board) -> Velocity:
     pairs = colliding_row_pairs(n, board)
     if len(pairs) == 0:
         return None
@@ -46,7 +48,7 @@ def __distance(n: Size, a: Board, b: Board) -> int:
     return reduce(lambda d, i: d + abs(a[i] - b[i]), range(n), 0)
 
 
-def __pair(n: Size) -> Tuple[Row, Row]:
+def __pair(n: Size) -> Velocity:
     x = randint(0, n - 1)
     y = randint(0, n - 1)
     while x == y:
@@ -54,14 +56,9 @@ def __pair(n: Size) -> Tuple[Row, Row]:
     return (Row(x), Row(y))
 
 
-def __plan(n: Size, trip: Trip[Board]) -> Tuple[Row, Row] | None:
-
+def __plan(n: Size, trip: Trip[Board]) -> Velocity:
     if trip.source == trip.destination:
         return None
-
-    # 2 0 3 1 4
-    # 1 3 2 0 4 | swaps: (0, 3), (1, 2), (2, 0), (3, 1)
-    # 1 0 3 2 4 | swaps: (0, 3)
     reverse_index: dict[int, int] = {}
     for i in range(n):
         reverse_index[trip.destination[i]] = i
@@ -78,13 +75,13 @@ def __plan(n: Size, trip: Trip[Board]) -> Tuple[Row, Row] | None:
 def __next(inertia: float, cognitive_coefficient: float, social_coefficient: float):
     def next_velocity(
         n: Size, components: Components[Tuple[Row, Row] | None]
-    ) -> Tuple[Row, Row] | None:
-        next_v = choices(
+    ) -> Velocity:
+        optional_velocity = choices(
             (components.inertial, components.cognitive, components.social),
             (inertia, cognitive_coefficient, social_coefficient),
             k=1,
         )[0]
-        return __pair(n) if next_v is None else next_v
+        return __pair(n) if optional_velocity is None else optional_velocity
 
     return next_velocity
 
@@ -106,7 +103,7 @@ particle_swarm = algorithm(
     __quality,
     __terminate,
     __plan,
-    __next(.8, .5, 1.5),
+    __next(0.8, 0.5, 1.5),
     __apply,
     __cache_key,
 )
