@@ -64,7 +64,9 @@ def __mutate(n: Size, board: Board) -> Board:
 
 def __terminate(n: Size, population: list[Individual[Board]], generation: int) -> bool:
     """returns True if the algorithm should terminate"""
-    return generation == n * 1000 or any(filter(lambda f: f == 100, map(individual_fitness, population)))
+    return generation == n * 1000 or any(
+        filter(lambda f: f == 100, map(individual_fitness, population))
+    )
 
 
 def __accept(n: Size, board: Board) -> bool:
