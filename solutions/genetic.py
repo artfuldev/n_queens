@@ -1,5 +1,5 @@
 from random import choice, random, shuffle
-from typing import Tuple
+from typing import Tuple, cast
 
 from domain.board import (
     Board,
@@ -9,8 +9,10 @@ from domain.board import (
     cache_key,
     colliding_row_pairs,
     place_queen,
+    swap,
 )
 from algorithms.genetic import Individual, genetic as algorithm, individual_fitness
+from domain.list import flatten, unique
 
 
 def __board(n: Size) -> Board:
@@ -45,20 +47,6 @@ def __crossover(n: Size, x: Board, y: Board) -> Board:
     return Board(list(map(Column, child)))
 
 
-def __swap(board: Board, x: Row, y: Row):
-    """swaps two rows and ensures no collisions"""
-    return place_queen(place_queen(board, x, board[y]), y, board[x])
-
-
-def __flatten(row_pairs: list[Tuple[Row, Row]]) -> list[Row]:
-    """returns a (flat) list of all rows in a list of row pairs"""
-    rows = set()
-    for x, y in row_pairs:
-        rows.add(x)
-        rows.add(y)
-    return list(rows)
-
-
 def __mutate(n: Size, board: Board) -> Board:
     """returns a new board with a collided row swapped according to the mutation rate"""
     mutation_probability = 1 / n
@@ -70,13 +58,15 @@ def __mutate(n: Size, board: Board) -> Board:
         return board
     x, y = choice(pairs)
     not_x_or_y = lambda i: i not in (x, y)
-    y_choices = list(filter(not_x_or_y, __flatten(pairs)))
-    return board if not any(y_choices) else __swap(board, x, choice(y_choices))
+    y_choices = list(filter(not_x_or_y, unique(flatten(cast(list[list[Row]], pairs)))))
+    return board if not any(y_choices) else swap(board, x, choice(y_choices))
 
 
 def __terminate(n: Size, population: list[Individual[Board]], generation: int) -> bool:
     """returns True if the algorithm should terminate"""
-    return generation == n * 1000 or any(filter(lambda f: f == 100, map(individual_fitness, population)))
+    return generation == n * 1000 or any(
+        filter(lambda f: f == 100, map(individual_fitness, population))
+    )
 
 
 def __accept(n: Size, board: Board) -> bool:

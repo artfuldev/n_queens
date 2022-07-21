@@ -32,11 +32,21 @@ def row_pairs(size: Size) -> Generator[Tuple[Row, Row], None, None]:
             if x != y:
                 yield Row(x), Row(y)
 
+
 def colliding_row_pairs(n: Size, board: Board) -> list[Tuple[Row, Row]]:
     return list(filter(partial(has_collision, board), row_pairs(n)))
 
+
+def swap(board: Board, x: Row, y: Row):
+    next_board = copy(board)
+    next_board[y] = board[x]
+    next_board[x] = board[y]
+    return next_board
+
+
 def cache_key(board: Board) -> str:
     return "".join(map(str, board))
+
 
 def stringify(board: Board):
     size = len(board)
