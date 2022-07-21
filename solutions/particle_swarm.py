@@ -79,7 +79,7 @@ def __next(inertia: float, cognitive_coefficient: float, social_coefficient: flo
     return swap
 
 
-def __move(n: Size, board: Board, velocity: Swap):
+def __move(n: Size, board: Board, velocity: Swap) -> Board:
     if velocity is None:
         return board
     x, y = velocity
