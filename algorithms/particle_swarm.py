@@ -78,10 +78,10 @@ def particle_swarm(
                     particle.best,
                     key=partial(quality, problem),
                 )
-                best = max(
-                    map(lambda particle: particle.best, particles),
-                    key=partial(quality, problem),
-                )
+            best = max(
+                map(lambda particle: particle.best, particles),
+                key=partial(quality, problem),
+            )
         return output(problem, best)
 
     return from_optimizer(key, accept, optimize)
