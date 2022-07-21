@@ -12,7 +12,7 @@ from domain.board import (
     swap,
 )
 from algorithms.solve import Solve
-from algorithms.genetic import Individual, genetic as algorithm, individual_fitness
+from algorithms.genetic import Individual, genetic as algorithm
 from domain.list import flatten, unique
 
 
@@ -66,7 +66,7 @@ def __mutate(n: Size, board: Board) -> Board:
 def __terminate(n: Size, population: list[Individual[Board]], generation: int) -> bool:
     """returns True if the algorithm should terminate"""
     return generation == n * 1000 or any(
-        filter(lambda f: f == 100, map(individual_fitness, population))
+        filter(lambda f: f == 100, map(lambda i: i.fitness, population))
     )
 
 
