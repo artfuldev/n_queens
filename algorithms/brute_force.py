@@ -7,10 +7,6 @@ Problem = TypeVar("Problem")
 Solution = TypeVar("Solution")
 
 
-def __identity(_: Any, candidate: Candidate) -> Candidate:
-    return candidate
-
-
 def brute_force(
     first: Callable[[Problem], Candidate | None],
     next: Callable[[Problem, Candidate], Candidate | None],
