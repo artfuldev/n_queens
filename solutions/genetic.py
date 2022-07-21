@@ -11,6 +11,7 @@ from domain.board import (
     place_queen,
     swap,
 )
+from algorithms.solve import Solve
 from algorithms.genetic import Individual, genetic as algorithm, individual_fitness
 from domain.list import flatten, unique
 
@@ -22,7 +23,7 @@ def __board(n: Size) -> Board:
     return Board(rows)
 
 
-def __population(n: Size) -> list[Board]:
+def __populate(n: Size) -> list[Board]:
     """returns a random population of n boards"""
     return [__board(n) for _ in range(n)]
 
@@ -73,16 +74,21 @@ def __accept(n: Size, board: Board) -> bool:
     return __fitness(n, board) == 100
 
 
+def __output(n: Size, individual: Individual[Board]) -> Board:
+    return individual.candidate
+
+
 def __cache_key(n: Size, board: Board) -> str:
     return cache_key(board)
 
 
 genetic = algorithm(
-    __population,
+    __populate,
     __fitness,
     __crossover,
     __mutate,
     __terminate,
+    __output,
     __cache_key,
     __accept,
 )
