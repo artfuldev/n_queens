@@ -36,4 +36,8 @@ def __accept(size: Size, board: Board) -> bool:
     return not any(filter(partial(has_collision, board), row_pairs(size)))
 
 
-brute_force = algorithm(__first, __next, __accept)
+def __output(_: Size, board: Board) -> Board:
+    return board
+
+
+brute_force = algorithm(__first, __next, __accept, __output)

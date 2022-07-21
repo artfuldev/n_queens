@@ -1,4 +1,4 @@
-from typing import Callable, TypeVar
+from typing import Callable, TypeVar, Any
 
 from .solve import Solve
 
@@ -7,7 +7,7 @@ Problem = TypeVar("Problem")
 Solution = TypeVar("Solution")
 
 
-def __identity(_: Problem, candidate: Candidate):
+def __identity(_: Any, candidate: Candidate) -> Candidate:
     return candidate
 
 
@@ -15,7 +15,7 @@ def brute_force(
     first: Callable[[Problem], Candidate | None],
     next: Callable[[Problem, Candidate], Candidate | None],
     accept: Callable[[Problem, Candidate], bool],
-    output: Callable[[Problem, Candidate], Solution] = __identity,
+    output: Callable[[Problem, Candidate], Solution],
 ) -> Solve[Problem, Solution]:
     def solve(problem: Problem):
         candidate = first(problem)
