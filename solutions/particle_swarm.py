@@ -44,10 +44,6 @@ def __terminate(n: Size, board: Board) -> bool:
     return __quality(n, board) == 100
 
 
-def __distance(n: Size, a: Board, b: Board) -> int:
-    return reduce(lambda d, i: d + abs(a[i] - b[i]), range(n), 0)
-
-
 def __pair(n: Size) -> Velocity:
     x = randint(0, n - 1)
     y = randint(0, n - 1)
