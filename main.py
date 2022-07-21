@@ -26,7 +26,7 @@ def solve(problem: Problem):
     return Report(problem.algorithm, problem.size, solutions, ended - started)
 
 
-def find_solutions(algorithms: list[str], size: int, count=1, until: int = None):
+def find_solutions(algorithms: list[str], size: int, count=1, until: int | None = None):
     if count <= 0:
         raise
     stop = size + 1 if until is None else until + 1
