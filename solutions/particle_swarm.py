@@ -1,5 +1,3 @@
-from functools import reduce
-from itertools import repeat
 from random import choice, choices, shuffle
 from typing import Tuple, cast
 from algorithms.particle_swarm import Trip, Components, particle_swarm as algorithm
@@ -17,14 +15,18 @@ def __first(n: Size) -> list[Board]:
     return [__board(n) for _ in range(n)]
 
 
-def __velocity(n: Size, board: Board) -> list[Tuple[Row, Row]]:
+def __pair(n: Size) -> Tuple[Row, Row]:
+    return cast(Tuple[Row, Row], choices(range(n), k=2))
+
+
+def __velocity(n: Size, board: Board) -> Tuple[Row, Row]:
     pairs = colliding_row_pairs(n, board)
     if len(pairs) == 0:
-        return []
+        return __pair(n)
     x, y = choice(pairs)
     not_x_or_y = lambda i: i not in (x, y)
     y_choices = list(filter(not_x_or_y, unique(flatten(cast(list[list[Row]], pairs)))))
-    return [] if len(y_choices) == 0 else [(x, choice(y_choices))]
+    return __pair(n) if len(y_choices) == 0 else (x, choice(y_choices))
 
 
 def __quality(n: Size, board: Board) -> float:
@@ -35,32 +37,26 @@ def __terminate(n: Size, board: Board) -> bool:
     return __quality(n, board) == 100
 
 
-def __plan(n: Size, trip: Trip[Board]) -> list[Tuple[Row, Row]]:
-    pass
+def __plan(n: Size, trip: Trip[Board]) -> Tuple[Row, Row]:
+    return __velocity(n, trip.source)
 
 
 def __next(inertia: float, cognitive_coefficient: float, social_coefficient: float):
     def next_velocity(
-        n: Size, components: Components[list[Tuple[Row, Row]]]
-    ) -> list[Tuple[Row, Row]]:
-        population = components.inertial + components.cognitive + components.social
-        weights = (
-            list(repeat(inertia, len(components.inertial)))
-            + list(repeat(cognitive_coefficient, len(components.cognitive)))
-            + list(repeat(social_coefficient, len(components.social)))
-        )
-        return choices(population, weights, k=1)
+        n: Size, components: Components[Tuple[Row, Row]]
+    ) -> Tuple[Row, Row]:
+        return choices(
+            (components.inertial, components.cognitive, components.social),
+            (inertia, cognitive_coefficient, social_coefficient),
+            k=1,
+        )[0]
 
     return next_velocity
 
 
-def __swap(board: Board, pair: Tuple[Row, Row]) -> Board:
-    x, y = pair
+def __apply(n: Size, board: Board, row_pair: Tuple[Row, Row]):
+    x, y = row_pair
     return swap(board, x, y)
-
-
-def __apply(n: Size, board: Board, row_pairs: list[Tuple[Row, Row]]):
-    return reduce(__swap, row_pairs, board)
 
 
 def __cache_key(_: Size, board: Board) -> str:
