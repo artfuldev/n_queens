@@ -106,7 +106,7 @@ particle_swarm = algorithm(
     __quality,
     __terminate,
     __plan,
-    __next(0.4, 1.5, 3.0),
+    __next(.8, .5, 1.5),
     __apply,
     __cache_key,
 )
