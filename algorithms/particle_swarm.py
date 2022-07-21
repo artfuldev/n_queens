@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from functools import partial
-from typing import Callable, Generic, Iterable, TypeVar
+from typing import Any, Callable, Generic, Iterable, TypeVar
 
 from .from_optimizer import from_optimizer
 from .solve import Problem, Solve
@@ -21,12 +21,8 @@ def __particle(position: Position, velocity: Velocity) -> Particle[Position, Vel
     return Particle(position, velocity, position)
 
 
-def __always(problem: Problem, solution: Solution) -> bool:
+def __always(problem: Any, solution: Any) -> bool:
     return True
-
-
-def __position(problem: Problem, position: Position):
-    return position
 
 
 @dataclass(frozen=True)
@@ -50,8 +46,8 @@ def particle_swarm(
     plan: Callable[[Problem, Trip[Position]], Velocity],
     next: Callable[[Problem, Velocities[Velocity]], Velocity],
     move: Callable[[Problem, Position, Velocity], Position],
+    output: Callable[[Problem, Position], Solution],
     key: Callable[[Problem, Solution], str],
-    output: Callable[[Problem, Position], Solution] = __position,
     accept: Callable[[Problem, Solution], bool] = __always,
 ) -> Solve[Problem, Solution]:
     def optimize(problem: Problem) -> Solution:

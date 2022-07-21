@@ -86,6 +86,10 @@ def __move(n: Size, board: Board, velocity: Swap) -> Board:
     return swap(board, x, y)
 
 
+def __output(_: Size, board: Board) -> Board:
+    return board
+
+
 def __cache_key(_: Size, board: Board) -> str:
     return cache_key(board)
 
@@ -98,5 +102,6 @@ particle_swarm = algorithm(
     __plan,
     __next(0.8, 0.5, 1.5),
     __move,
+    __output,
     __cache_key,
 )
