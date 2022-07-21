@@ -1,4 +1,3 @@
-from functools import reduce
 from random import choice, choices, randint, shuffle
 from typing import Optional, Tuple, cast
 from algorithms.particle_swarm import Trip, Velocities, particle_swarm as algorithm
@@ -13,7 +12,7 @@ from domain.board import (
 )
 from domain.list import flatten, unique
 
-Velocity = Optional[Tuple[Row, Row]]
+Swap = Optional[Tuple[Row, Row]]
 
 
 def __board(n: Size) -> Board:
@@ -26,7 +25,7 @@ def __first(n: Size) -> list[Board]:
     return [__board(n) for _ in range(n)]
 
 
-def __velocity(n: Size, board: Board) -> Velocity:
+def __velocity(n: Size, board: Board) -> Swap:
     pairs = colliding_row_pairs(n, board)
     if len(pairs) == 0:
         return None
@@ -44,7 +43,7 @@ def __terminate(n: Size, board: Board) -> bool:
     return __quality(n, board) == 100
 
 
-def __pair(n: Size) -> Velocity:
+def __pair(n: Size) -> Swap:
     x = randint(0, n - 1)
     y = randint(0, n - 1)
     while x == y:
@@ -52,7 +51,7 @@ def __pair(n: Size) -> Velocity:
     return (Row(x), Row(y))
 
 
-def __plan(n: Size, trip: Trip[Board]) -> Velocity:
+def __plan(n: Size, trip: Trip[Board]) -> Swap:
     if trip.source == trip.destination:
         return None
     reverse_index: dict[int, int] = {}
@@ -69,9 +68,7 @@ def __plan(n: Size, trip: Trip[Board]) -> Velocity:
 
 
 def __next(inertia: float, cognitive_coefficient: float, social_coefficient: float):
-    def next_velocity(
-        n: Size, velocities: Velocities[Tuple[Row, Row] | None]
-    ) -> Velocity:
+    def swap(n: Size, velocities: Velocities[Swap]) -> Swap:
         optional_velocity = choices(
             (velocities.inertial, velocities.cognitive, velocities.social),
             (inertia, cognitive_coefficient, social_coefficient),
@@ -79,10 +76,10 @@ def __next(inertia: float, cognitive_coefficient: float, social_coefficient: flo
         )[0]
         return __pair(n) if optional_velocity is None else optional_velocity
 
-    return next_velocity
+    return swap
 
 
-def __move(n: Size, board: Board, velocity: Velocity):
+def __move(n: Size, board: Board, velocity: Swap):
     if velocity is None:
         return board
     x, y = velocity
