@@ -1,7 +1,6 @@
-from ast import Call
 from dataclasses import dataclass
 from functools import partial
-from typing import Callable, Generic, Protocol, TypeVar
+from typing import Callable, Generic, TypeVar
 
 from .from_optimizer import from_optimizer
 from .solve import Problem, Solve
