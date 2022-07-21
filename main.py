@@ -41,5 +41,5 @@ def find_solutions(algorithms: list[str], size: int, count=1, until: int = None)
 
 __algorithms = ["back_tracking", "genetic", "particle_swarm"]
 
-for report in find_solutions(__algorithms, 4, until=20):
+for report in find_solutions(__algorithms, 13, until=20):
     print(stringify(report))
