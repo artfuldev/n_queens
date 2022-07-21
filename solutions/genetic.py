@@ -1,5 +1,5 @@
 from random import choice, random, shuffle
-from typing import Tuple
+from typing import Tuple, cast
 
 from domain.board import (
     Board,
@@ -58,7 +58,7 @@ def __mutate(n: Size, board: Board) -> Board:
         return board
     x, y = choice(pairs)
     not_x_or_y = lambda i: i not in (x, y)
-    y_choices = list(filter(not_x_or_y, unique(flatten(pairs))))
+    y_choices = list(filter(not_x_or_y, unique(flatten(cast(list[list[Row]], pairs)))))
     return board if not any(y_choices) else swap(board, x, choice(y_choices))
 
 
