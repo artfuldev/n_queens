@@ -38,7 +38,10 @@ def colliding_row_pairs(n: Size, board: Board) -> list[Tuple[Row, Row]]:
 
 
 def swap(board: Board, x: Row, y: Row):
-    return place_queen(place_queen(board, x, board[y]), y, board[x])
+    next_board = copy(board)
+    next_board[y] = board[x]
+    next_board[x] = board[y]
+    return next_board
 
 
 def cache_key(board: Board) -> str:
