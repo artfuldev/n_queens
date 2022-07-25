@@ -7,6 +7,7 @@ from solutions.brute_force import brute_force
 from solutions.back_tracking import back_tracking
 from solutions.genetic import genetic
 from solutions.particle_swarm import particle_swarm
+from solutions.simulated_annealing import anneal
 from itertools import islice
 
 
@@ -15,6 +16,7 @@ __solvers: dict[str, Solve[Size, Board]] = {
     "back_tracking": back_tracking,
     "genetic": genetic,
     "particle_swarm": particle_swarm,
+    "simulated_annealing": anneal
 }
 
 
@@ -39,7 +41,8 @@ def find_solutions(algorithms: list[str], size: int, count=1, until: int | None 
             yield report
 
 
-__algorithms = ["back_tracking", "genetic", "particle_swarm"]
+__algorithms = ["simulated_annealing", "genetic", "particle_swarm"]
 
-for report in find_solutions(__algorithms, 13, until=20):
+
+for report in find_solutions(__algorithms, 100, until=200):
     print(stringify(report))
