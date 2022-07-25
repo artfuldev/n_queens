@@ -78,7 +78,7 @@ def __output(n: Size, individual: Individual[Board]) -> Board:
     return individual.candidate
 
 
-def __cache_key(n: Size, board: Board) -> str:
+def __key(n: Size, board: Board) -> str:
     return cache_key(board)
 
 
@@ -89,6 +89,6 @@ genetic = algorithm(
     __mutate,
     __terminate,
     __output,
-    __cache_key,
+    __key,
     __valid,
 )
