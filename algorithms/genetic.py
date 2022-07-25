@@ -39,7 +39,7 @@ def genetic(
     terminate: Callable[[_P, list[Individual[_C]], int], bool],
     output: Callable[[_P, Individual[_C]], _S],
     key: Callable[[_P, _S], str],
-    accept: Callable[[_P, _S], bool] = __always,
+    valid: Callable[[_P, _S], bool] = __always,
     select: Callable[[_P, list[Individual[_C]]], Tuple[_C, _C]] = __select,
 ) -> Solve[_P, _S]:
     def optimize(problem: _P) -> _S:
@@ -64,4 +64,4 @@ def genetic(
             gene_pool = sorted(next_gene_pool, key=lambda i: i.fitness, reverse=True)
         return output(problem, gene_pool[0])
 
-    return from_optimizer(key, accept, optimize)
+    return from_optimizer(key, valid, optimize)

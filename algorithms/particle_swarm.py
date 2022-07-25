@@ -48,7 +48,7 @@ def particle_swarm(
     move: Callable[[Problem, Position, Velocity], Position],
     output: Callable[[Problem, Position], Solution],
     key: Callable[[Problem, Solution], str],
-    accept: Callable[[Problem, Solution], bool] = __always,
+    valid: Callable[[Problem, Solution], bool] = __always,
 ) -> Solve[Problem, Solution]:
     def optimize(problem: Problem) -> Solution:
         def best(positions: Iterable[Position]):
@@ -73,4 +73,4 @@ def particle_swarm(
                 global_best = best((particle.best, global_best))
         return output(problem, global_best)
 
-    return from_optimizer(key, accept, optimize)
+    return from_optimizer(key, valid, optimize)

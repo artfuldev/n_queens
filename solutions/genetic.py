@@ -70,7 +70,7 @@ def __terminate(n: Size, population: list[Individual[Board]], generation: int) -
     )
 
 
-def __accept(n: Size, board: Board) -> bool:
+def __valid(n: Size, board: Board) -> bool:
     return __fitness(n, board) == 100
 
 
@@ -90,5 +90,5 @@ genetic = algorithm(
     __terminate,
     __output,
     __cache_key,
-    __accept,
+    __valid,
 )
