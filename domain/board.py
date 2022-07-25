@@ -63,7 +63,7 @@ def swap(board: Board, x: Row, y: Row) -> Board:
 
 
 def cache_key(board: Board) -> str:
-    return "".join(map(str, board))
+    return ",".join(map(str, board))
 
 
 def stringify(board: Board):
