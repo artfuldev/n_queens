@@ -1,18 +1,39 @@
-from copy import copy
 from functools import partial
-from typing import Generator, NewType, Tuple
+from random import shuffle
+from typing import Generator, Tuple
+from pyrsistent import pvector
+from pyrsistent.typing import PVector
 
-Size = NewType("Size", int)
-Row = NewType("Row", int)
-Column = NewType("Column", int)
-Board = NewType("Board", list[Column])
+Size = int
+Row = int
+Column = int
+Board = PVector[Column]
+
+
+def from_list(columns: list[Column]) -> Board:
+    return pvector(columns)
+
+
+def to_list(board: Board) -> list[Column]:
+    return list(iter(board))
+
+
+def create(n: Size) -> Board:
+    return from_list(list(range(n)))
+
+
+def permute(board: Board) -> Board:
+    columns = to_list(board)
+    shuffle(columns)
+    return from_list(columns)
+
+
+def shuffled(n: Size) -> Board:
+    return permute(create(n))
 
 
 def place_queen(board: Board, row: Row, column: Column) -> Board:
-    """returns a new board with a queen placed in the given row and column"""
-    next_board = copy(board)
-    next_board[row] = column
-    return Board(next_board)
+    return board.set(row, column)
 
 
 def has_collision(board: Board, pair: Tuple[Row, Row]) -> bool:
@@ -37,11 +58,8 @@ def colliding_row_pairs(n: Size, board: Board) -> list[Tuple[Row, Row]]:
     return list(filter(partial(has_collision, board), row_pairs(n)))
 
 
-def swap(board: Board, x: Row, y: Row):
-    next_board = copy(board)
-    next_board[y] = board[x]
-    next_board[x] = board[y]
-    return next_board
+def swap(board: Board, x: Row, y: Row) -> Board:
+    return board.set(y, board[x]).set(x, board[y])
 
 
 def cache_key(board: Board) -> str:

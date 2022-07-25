@@ -1,9 +1,15 @@
-from copy import copy
-from itertools import islice
-from random import choice, randint, shuffle
-from typing import Tuple, Union, Literal, cast
+from random import choice, randint
+from typing import Tuple, cast
 from math import exp
-from domain.board import Board, Column, Row, Size, cache_key, colliding_row_pairs, swap
+from domain.board import (
+    Board,
+    Row,
+    Size,
+    cache_key,
+    colliding_row_pairs,
+    shuffled,
+    swap,
+)
 from algorithms.simulated_annealing import (
     Budget,
     Energy,
@@ -15,11 +21,7 @@ from algorithms.simulated_annealing import (
 )
 from domain.list import flatten, unique
 
-
-def __first(n: Size) -> Board:
-    board = Board(list(map(Column, range(n))))
-    shuffle(board)
-    return board
+__first = shuffled
 
 
 def __budget(n: Size) -> Budget:

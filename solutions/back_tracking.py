@@ -1,11 +1,9 @@
-from copy import copy
 from typing import Optional
 
 from domain.board import (
     Board,
-    Row,
     Size,
-    Column,
+    from_list,
     has_collision,
     place_queen,
     row_pairs,
@@ -14,7 +12,7 @@ from algorithms.back_tracking import back_tracking as algorithm
 
 
 def __root(_: Size) -> Optional[Board]:
-    return Board([])
+    return from_list([])
 
 
 def __reject(size: Size, board: Board) -> bool:
@@ -34,20 +32,18 @@ def __next(size: Size, board: Board) -> Optional[Board]:
     filled = len(board)
     if filled > size:
         return None
-    row = Row(filled - 1)
-    column = Column(board[-1] + 1)
+    row = filled - 1
+    column = board[-1] + 1
     while column < size:
         board = place_queen(board, row, column)
         if len(set(board)) == filled:
             return board
-        column = Column(column + 1)
+        column += 1
     return None
 
 
 def __first(size: Size, board: Board) -> Optional[Board]:
-    seed = copy(board)
-    seed.append(Column(-1))
-    return __next(size, seed)
+    return __next(size, board.append(-1))
 
 
 def __output(_: Size, board: Board) -> Board:
