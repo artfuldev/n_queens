@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from functools import partial
 from random import uniform
 from typing import Generic, TypeVar, Callable, Any
 
