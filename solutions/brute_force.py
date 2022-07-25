@@ -2,30 +2,30 @@ from copy import copy
 from functools import partial
 from typing import Optional
 
-from domain.board import Board, Column, Size, has_collision, row_pairs
+from domain.board import Board, Column, Size, create, from_list, has_collision, row_pairs, to_list
 from algorithms.brute_force import brute_force as algorithm
 
 
 def __next_permutation(board: Board) -> Board:
-    rows = copy(board)
-    r = len(rows) - 1
-    while rows[r - 1] >= rows[r] and r > 0:
+    columns = to_list(board)
+    r = len(columns) - 1
+    while columns[r - 1] >= columns[r] and r > 0:
         r -= 1
     pivot = r
     if pivot == 0:
-        rows.sort()
-        return rows
+        columns.sort()
+        return from_list(columns)
     else:
-        swap = len(rows) - 1
-        while rows[pivot - 1] >= rows[swap] and swap >= 0:
+        swap = len(columns) - 1
+        while columns[pivot - 1] >= columns[swap] and swap >= 0:
             swap -= 1
-        rows[pivot - 1], rows[swap] = rows[swap], rows[pivot - 1]
-        rows[pivot:] = sorted(rows[pivot:])
-    return rows
+        columns[pivot - 1], columns[swap] = columns[swap], columns[pivot - 1]
+        columns[pivot:] = sorted(columns[pivot:])
+    return from_list(columns)
 
 
 def __first(size: Size) -> Optional[Board]:
-    return Board(list(map(Column, range(size)))) if size > 3 else None
+    return create(size) if size > 3 else None
 
 
 def __next(size: Size, board: Board) -> Optional[Board]:

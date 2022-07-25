@@ -1,31 +1,23 @@
-from random import choice, random, shuffle
-from typing import Tuple, cast
+from random import choice, random
+from typing import cast
 
 from domain.board import (
     Board,
-    Column,
     Row,
     Size,
     cache_key,
     colliding_row_pairs,
-    place_queen,
+    from_list,
+    shuffled,
     swap,
 )
-from algorithms.solve import Solve
 from algorithms.genetic import Individual, genetic as algorithm
 from domain.list import flatten, unique
 
 
-def __board(n: Size) -> Board:
-    """returns a random board with shuffled rows"""
-    rows = list(map(Column, range(n)))
-    shuffle(rows)
-    return Board(rows)
-
-
 def __populate(n: Size) -> list[Board]:
     """returns a random population of n boards"""
-    return [__board(n) for _ in range(n)]
+    return [shuffled(n) for _ in range(n)]
 
 
 def __fitness(n: Size, board: Board) -> float:
@@ -36,16 +28,18 @@ def __fitness(n: Size, board: Board) -> float:
 def __crossover(n: Size, x: Board, y: Board) -> Board:
     """Returns a new child board with a selection of rows from parents"""
     fills = list(range(n))
-    child = [-1 for _ in range(n)]
+    child = from_list([-1 for _ in range(n)])
     for i in range(n):
         if x[i] == y[i]:
-            child[i] = x[i]
+            child = child.set(i, x[i])
             fills.remove(x[i])
+        else:
+            child = child.set(i, -1)
     for i in range(n):
         if child[i] == -1:
-            child[i] = choice(fills)
+            child = child.set(i, choice(fills))
             fills.remove(child[i])
-    return Board(list(map(Column, child)))
+    return child
 
 
 def __mutate(n: Size, board: Board) -> Board:

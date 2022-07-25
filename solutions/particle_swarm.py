@@ -8,6 +8,7 @@ from domain.board import (
     Board,
     cache_key,
     colliding_row_pairs,
+    shuffled,
     swap,
 )
 from domain.list import flatten, unique
@@ -15,14 +16,8 @@ from domain.list import flatten, unique
 Swap = Optional[Tuple[Row, Row]]
 
 
-def __board(n: Size) -> Board:
-    board = Board(list(map(Column, range(n))))
-    shuffle(board)
-    return board
-
-
 def __first(n: Size) -> list[Board]:
-    return [__board(n) for _ in range(n)]
+    return [shuffled(n) for _ in range(n)]
 
 
 def __velocity(n: Size, board: Board) -> Swap:
