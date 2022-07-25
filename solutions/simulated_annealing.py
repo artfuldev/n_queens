@@ -14,7 +14,7 @@ from algorithms.simulated_annealing import (
     Budget,
     Energy,
     RemainingBudget,
-    NeighborEnergy,
+    CandidateEnergy,
     Probability,
     Temperature,
     anneal as algorithm,
@@ -53,7 +53,7 @@ def __neighbor(n: Size, board: Board) -> Board:
 
 
 def __temperature(n: Size, b: RemainingBudget) -> Temperature:
-    return pow(0.97, ((1 - b) * n * n) - 1) * n * n
+    return pow(0.97, ((1 - b) * n * n) - 1) * n
 
 
 def __energy(n: Size, board: Board) -> Energy:
@@ -64,8 +64,8 @@ def __terminate(n: Size, board: Board) -> bool:
     return __energy(n, board) == 0
 
 
-def __accept(n: Size, e: Energy, e_next: NeighborEnergy, t: Temperature) -> Probability:
-    return 1 if e_next < e else exp(-(e_next - e) / t)
+def __accept(n: Size, e: Energy, e_dash: CandidateEnergy, t: Temperature) -> Probability:
+    return 1 if e_dash < e else exp(-(e_dash - e) / t)
 
 
 def __key(n: Size, board: Board) -> str:

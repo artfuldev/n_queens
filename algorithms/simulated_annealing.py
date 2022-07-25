@@ -10,7 +10,7 @@ Budget = int
 Energy = float
 Temperature = float
 RemainingBudget = float
-NeighborEnergy = Energy
+CandidateEnergy = Energy
 Probability = float
 
 
@@ -25,24 +25,28 @@ def anneal(
     temperature: Callable[[Problem, RemainingBudget], Temperature],
     energy: Callable[[Problem, System], Energy],
     terminate: Callable[[Problem, System], bool],
-    accept: Callable[[Problem, Energy, NeighborEnergy, Temperature], Probability],
+    accept: Callable[[Problem, Energy, CandidateEnergy, Temperature], Probability],
     key: Callable[[Problem, System], str],
     valid: Callable[[Problem, System], bool] = __always,
 ) -> Solve[Problem, System]:
     def optimize(problem: Problem) -> System:
-        s = first(problem)
-        k_max = budget(problem)
-        for k in range(k_max):
-            if terminate(problem, s):
-                return s
-            s_new = neighbor(problem, s)
-            p = accept(
+        system = first(problem)
+        steps = budget(problem)
+        for step in range(steps):
+            if terminate(problem, system):
+                return system
+            candidate = neighbor(problem, system)
+            acceptance_probability = accept(
                 problem,
-                energy(problem, s),
-                energy(problem, s_new),
-                temperature(problem, 1 - ((k + 1) / k_max)),
+                energy(problem, system),
+                energy(problem, candidate),
+                temperature(problem, 1 - ((step + 1) / steps)),
             )
-            s = choices([s, s_new], [1 - p, p], k=1)[0]
-        return s
+            system = choices(
+                [candidate, system],
+                [acceptance_probability, 1 - acceptance_probability],
+                k=1,
+            )[0]
+        return system
 
     return from_optimizer(key, valid, optimize)
