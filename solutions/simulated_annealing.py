@@ -60,8 +60,8 @@ def __energy(n: Size, board: Board) -> Energy:
     return len(colliding_row_pairs(n, board))
 
 
-def __terminate(n: Size, energy: Energy) -> bool:
-    return energy == 0
+def __terminate(n: Size, board: Board) -> bool:
+    return __energy(n, board) == 0
 
 
 def __accept(n: Size, e: Energy, e_next: NeighborEnergy, t: Temperature) -> Probability:
