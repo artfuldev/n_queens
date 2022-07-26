@@ -1,4 +1,4 @@
-from random import choices
+from random import uniform
 from typing import TypeVar, Callable, Any
 
 from .solve import Solve
@@ -42,11 +42,8 @@ def anneal(
                 energy(problem, candidate),
                 temperature(problem, 1 - ((step + 1) / steps)),
             )
-            system = choices(
-                [candidate, system],
-                [acceptance_probability, 1 - acceptance_probability],
-                k=1,
-            )[0]
+            if acceptance_probability >= uniform(0, 1):
+                system = candidate
         return system
 
     return from_optimizer(key, valid, optimize)
