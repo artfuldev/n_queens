@@ -32,7 +32,7 @@ def __neighbor(n: Size, board: Board) -> Board:
 
 
 def __temperature(n: Size, b: RemainingBudget) -> Temperature:
-    return pow(0.97, ((1 - b) * n * n) - 1) * n
+    return pow(0.97, ((1 - b) * __budget(n)) - 1) * n
 
 
 __energy = collisions
