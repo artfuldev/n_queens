@@ -24,14 +24,10 @@ def create(n: Size) -> Board:
     return from_list(list(range(n)))
 
 
-def permute(board: Board) -> Board:
-    columns = to_list(board)
+def shuffled(n: Size) -> Board:
+    columns = to_list(create(n))
     shuffle(columns)
     return from_list(columns)
-
-
-def shuffled(n: Size) -> Board:
-    return permute(create(n))
 
 
 def place_queen(board: Board, row: Row, column: Column) -> Board:
