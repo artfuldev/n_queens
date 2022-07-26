@@ -41,7 +41,7 @@ def find_solutions(algorithms: list[str], size: int, count=1, until: int | None 
             yield report
 
 
-__algorithms = ["simulated_annealing"]
+__algorithms = ["back_tracking", "genetic", "particle_swarm", "simulated_annealing"]
 
 
 for report in find_solutions(__algorithms, 4, until=200):
