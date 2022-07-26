@@ -1,18 +1,16 @@
 from random import choice, random
-from typing import cast
 
 from domain.board import (
     Board,
-    Row,
     Size,
     cache_key,
-    colliding_row_pairs,
+    collisions,
     from_list,
+    random_row_pair_that_may_reduce_collisions,
     shuffled,
-    swap,
+    swap_rows,
 )
 from algorithms.genetic import Individual, genetic as algorithm
-from domain.list import flatten, unique
 
 
 def __populate(n: Size) -> list[Board]:
@@ -22,7 +20,7 @@ def __populate(n: Size) -> list[Board]:
 
 def __fitness(n: Size, board: Board) -> float:
     """returns the fitness of a board"""
-    return (pow(n, 2) - len(colliding_row_pairs(n, board))) * 100 / pow(n, 2)
+    return (pow(n, 2) - collisions(n, board)) * 100 / pow(n, 2)
 
 
 def __crossover(n: Size, x: Board, y: Board) -> Board:
@@ -48,13 +46,8 @@ def __mutate(n: Size, board: Board) -> Board:
     chance = random()
     if chance >= mutation_probability:
         return board
-    pairs = colliding_row_pairs(n, board)
-    if len(pairs) == 0:
-        return board
-    x, y = choice(pairs)
-    not_x_or_y = lambda i: i not in (x, y)
-    y_choices = list(filter(not_x_or_y, unique(flatten(cast(list[list[Row]], pairs)))))
-    return board if not any(y_choices) else swap(board, x, choice(y_choices))
+    pair = random_row_pair_that_may_reduce_collisions(n, board)
+    return board if pair is None else swap_rows(board, pair)
 
 
 def __terminate(n: Size, population: list[Individual[Board]], generation: int) -> bool:

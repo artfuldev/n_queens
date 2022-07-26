@@ -1,15 +1,13 @@
-from random import choice
-from typing import Tuple, cast
 from math import exp
 from domain.board import (
     Board,
-    Row,
     Size,
     cache_key,
-    colliding_row_pairs,
+    collisions,
     random_row_pair,
+    random_row_pair_that_may_reduce_collisions,
     shuffled,
-    swap,
+    swap_rows,
 )
 from algorithms.simulated_annealing import (
     Budget,
@@ -20,7 +18,6 @@ from algorithms.simulated_annealing import (
     Temperature,
     anneal as algorithm,
 )
-from domain.list import flatten, unique
 
 __first = shuffled
 
@@ -29,28 +26,16 @@ def __budget(n: Size) -> Budget:
     return n * n
 
 
-def __swap(board: Board, row_pair: Tuple[Row, Row]) -> Board:
-    x, y = row_pair
-    return swap(board, x, y)
-
-
 def __neighbor(n: Size, board: Board) -> Board:
-    pairs = colliding_row_pairs(n, board)
-    if len(pairs) == 0:
-        return __swap(board, random_row_pair(n))
-    x, y = choice(pairs)
-    not_x_or_y = lambda i: i not in (x, y)
-    y_choices = list(filter(not_x_or_y, unique(flatten(cast(list[list[Row]], pairs)))))
-    row_pair = random_row_pair(n) if len(y_choices) == 0 else (x, choice(y_choices))
-    return __swap(board, row_pair)
+    pair = random_row_pair_that_may_reduce_collisions(n, board)
+    return swap_rows(board, pair if pair is not None else random_row_pair(n))
 
 
 def __temperature(n: Size, b: RemainingBudget) -> Temperature:
     return pow(0.97, ((1 - b) * n * n) - 1) * n
 
 
-def __energy(n: Size, board: Board) -> Energy:
-    return len(colliding_row_pairs(n, board))
+__energy = collisions
 
 
 def __terminate(n: Size, board: Board) -> bool:

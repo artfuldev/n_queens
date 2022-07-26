@@ -1,17 +1,17 @@
-from random import choice, choices, shuffle
-from typing import Optional, Tuple, cast
+from random import choices, shuffle
+from typing import Optional, Tuple
 from algorithms.particle_swarm import Trip, Velocities, particle_swarm as algorithm
 from domain.board import (
     Row,
     Size,
     Board,
     cache_key,
-    colliding_row_pairs,
+    collisions,
     random_row_pair,
+    random_row_pair_that_may_reduce_collisions,
     shuffled,
-    swap,
+    swap_rows,
 )
-from domain.list import flatten, unique
 
 Swap = Optional[Tuple[Row, Row]]
 
@@ -20,18 +20,11 @@ def __first(n: Size) -> list[Board]:
     return [shuffled(n) for _ in range(n)]
 
 
-def __velocity(n: Size, board: Board) -> Swap:
-    pairs = colliding_row_pairs(n, board)
-    if len(pairs) == 0:
-        return None
-    x, y = choice(pairs)
-    not_x_or_y = lambda i: i not in (x, y)
-    y_choices = list(filter(not_x_or_y, unique(flatten(cast(list[list[Row]], pairs)))))
-    return None if len(y_choices) == 0 else (x, choice(y_choices))
+__velocity = random_row_pair_that_may_reduce_collisions
 
 
 def __quality(n: Size, board: Board) -> float:
-    return (pow(n, 2) - len(colliding_row_pairs(n, board))) * 100 / pow(n, 2)
+    return (pow(n, 2) - collisions(n, board)) * 100 / pow(n, 2)
 
 
 def __terminate(n: Size, board: Board) -> bool:
@@ -67,10 +60,7 @@ def __next(inertia: float, cognitive_coefficient: float, social_coefficient: flo
 
 
 def __move(n: Size, board: Board, velocity: Swap) -> Board:
-    if velocity is None:
-        return board
-    x, y = velocity
-    return swap(board, x, y)
+    return board if velocity is None else swap_rows(board, velocity)
 
 
 def __output(_: Size, board: Board) -> Board:

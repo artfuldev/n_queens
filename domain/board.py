@@ -1,8 +1,10 @@
 from functools import partial
-from random import randint, shuffle
-from typing import Generator, Tuple
+from random import choice, randint, shuffle
+from typing import Generator, Optional, Tuple, cast
 from pyrsistent import pvector
 from pyrsistent.typing import PVector
+
+from domain.list import flatten, unique
 
 Size = int
 Row = int
@@ -66,8 +68,29 @@ def colliding_row_pairs(n: Size, board: Board) -> list[Tuple[Row, Row]]:
     return list(filter(partial(has_collision, board), row_pairs(n)))
 
 
+def collisions(n: Size, board: Board) -> int:
+    return len(colliding_row_pairs(n, board))
+
+
+def random_row_pair_that_may_reduce_collisions(
+    n: Size, board: Board
+) -> Optional[Tuple[Row, Row]]:
+    pairs = colliding_row_pairs(n, board)
+    if len(pairs) == 0:
+        return None
+    x, y = choice(pairs)
+    not_x_or_y = lambda i: i not in (x, y)
+    y_choices = list(filter(not_x_or_y, unique(flatten(cast(list[list[Row]], pairs)))))
+    return None if len(y_choices) == 0 else (x, choice(y_choices))
+
+
 def swap(board: Board, x: Row, y: Row) -> Board:
     return board.set(y, board[x]).set(x, board[y])
+
+
+def swap_rows(board: Board, rows: Tuple[Row, Row]) -> Board:
+    x, y = rows
+    return swap(board, x, y)
 
 
 def cache_key(board: Board) -> str:
