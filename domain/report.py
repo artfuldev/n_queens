@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from .board import Board, Size, cache_key
 
-summary = "size: {:3d}, solutions: {:5d}, time: {:6.3f}s, method: {:15s}, last: {}"
+summary = "size: {:3d}, solutions: {:5d}, time: {:7.3f}s, method: {:15s}, last: {}"
 
 
 @dataclass
