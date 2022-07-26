@@ -16,7 +16,7 @@ __solvers: dict[str, Solve[Size, Board]] = {
     "back_tracking": back_tracking,
     "genetic": genetic,
     "particle_swarm": particle_swarm,
-    "simulated_annealing": anneal
+    "simulated_annealing": anneal,
 }
 
 
@@ -41,7 +41,13 @@ def find_solutions(algorithms: list[str], size: int, count=1, until: int | None 
             yield report
 
 
-__algorithms = ["back_tracking", "genetic", "particle_swarm", "simulated_annealing"]
+__algorithms = [
+    # "brute_force",
+    "back_tracking",
+    "genetic",
+    "particle_swarm",
+    "simulated_annealing",
+]
 
 
 for report in find_solutions(__algorithms, 4, until=200):
