@@ -1,5 +1,5 @@
 from functools import partial
-from random import shuffle
+from random import randint, shuffle
 from typing import Generator, Tuple
 from pyrsistent import pvector
 from pyrsistent.typing import PVector
@@ -52,6 +52,14 @@ def row_pairs(size: Size) -> Generator[Tuple[Row, Row], None, None]:
         for y in range(size):
             if x != y:
                 yield Row(x), Row(y)
+
+
+def random_row_pair(n: Size) -> Tuple[Row, Row]:
+    x = randint(0, n - 1)
+    y = randint(0, n - 1)
+    while x == y:
+        y = randint(0, n - 1)
+    return (Row(x), Row(y))
 
 
 def colliding_row_pairs(n: Size, board: Board) -> list[Tuple[Row, Row]]:

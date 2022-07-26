@@ -1,13 +1,13 @@
-from random import choice, choices, randint, shuffle
+from random import choice, choices, shuffle
 from typing import Optional, Tuple, cast
 from algorithms.particle_swarm import Trip, Velocities, particle_swarm as algorithm
 from domain.board import (
-    Column,
     Row,
     Size,
     Board,
     cache_key,
     colliding_row_pairs,
+    random_row_pair,
     shuffled,
     swap,
 )
@@ -38,14 +38,6 @@ def __terminate(n: Size, board: Board) -> bool:
     return __quality(n, board) == 100
 
 
-def __pair(n: Size) -> Swap:
-    x = randint(0, n - 1)
-    y = randint(0, n - 1)
-    while x == y:
-        y = randint(0, n - 1)
-    return (Row(x), Row(y))
-
-
 def __plan(n: Size, trip: Trip[Board]) -> Swap:
     if trip.source == trip.destination:
         return None
@@ -69,7 +61,7 @@ def __next(inertia: float, cognitive_coefficient: float, social_coefficient: flo
             (inertia, cognitive_coefficient, social_coefficient),
             k=1,
         )[0]
-        return __pair(n) if optional_velocity is None else optional_velocity
+        return random_row_pair(n) if optional_velocity is None else optional_velocity
 
     return swap
 

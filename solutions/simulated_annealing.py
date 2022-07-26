@@ -1,4 +1,4 @@
-from random import choice, randint
+from random import choice
 from typing import Tuple, cast
 from math import exp
 from domain.board import (
@@ -7,6 +7,7 @@ from domain.board import (
     Size,
     cache_key,
     colliding_row_pairs,
+    random_row_pair,
     shuffled,
     swap,
 )
@@ -28,14 +29,6 @@ def __budget(n: Size) -> Budget:
     return n * n
 
 
-def __pair(n: Size) -> Tuple[Row, Row]:
-    x = randint(0, n - 1)
-    y = randint(0, n - 1)
-    while x == y:
-        y = randint(0, n - 1)
-    return (Row(x), Row(y))
-
-
 def __swap(board: Board, row_pair: Tuple[Row, Row]) -> Board:
     x, y = row_pair
     return swap(board, x, y)
@@ -44,11 +37,11 @@ def __swap(board: Board, row_pair: Tuple[Row, Row]) -> Board:
 def __neighbor(n: Size, board: Board) -> Board:
     pairs = colliding_row_pairs(n, board)
     if len(pairs) == 0:
-        return __swap(board, __pair(n))
+        return __swap(board, random_row_pair(n))
     x, y = choice(pairs)
     not_x_or_y = lambda i: i not in (x, y)
     y_choices = list(filter(not_x_or_y, unique(flatten(cast(list[list[Row]], pairs)))))
-    row_pair = __pair(n) if len(y_choices) == 0 else (x, choice(y_choices))
+    row_pair = random_row_pair(n) if len(y_choices) == 0 else (x, choice(y_choices))
     return __swap(board, row_pair)
 
 
@@ -64,7 +57,9 @@ def __terminate(n: Size, board: Board) -> bool:
     return __energy(n, board) == 0
 
 
-def __accept(n: Size, e: Energy, e_dash: CandidateEnergy, t: Temperature) -> Probability:
+def __accept(
+    n: Size, e: Energy, e_dash: CandidateEnergy, t: Temperature
+) -> Probability:
     return 1 if e_dash < e else exp(-(e_dash - e) / t)
 
 
