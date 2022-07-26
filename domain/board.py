@@ -49,7 +49,7 @@ def row_pairs(size: Size) -> Generator[Tuple[Row, Row], None, None]:
     for x in range(size):
         for y in range(size):
             if x != y:
-                yield Row(x), Row(y)
+                yield x, y
 
 
 def random_row_pair(n: Size) -> Tuple[Row, Row]:
@@ -57,7 +57,7 @@ def random_row_pair(n: Size) -> Tuple[Row, Row]:
     y = randint(0, n - 1)
     while x == y:
         y = randint(0, n - 1)
-    return (Row(x), Row(y))
+    return x, y
 
 
 def colliding_row_pairs(n: Size, board: Board) -> list[Tuple[Row, Row]]:
