@@ -1,4 +1,4 @@
-from math import exp
+from math import exp, floor
 from domain.board import (
     Board,
     Size,
@@ -23,7 +23,7 @@ __first = shuffled
 
 
 def __budget(n: Size) -> Budget:
-    return n * n
+    return n * n * 10
 
 
 def __neighbor(n: Size, board: Board) -> Board:
@@ -32,7 +32,8 @@ def __neighbor(n: Size, board: Board) -> Board:
 
 
 def __temperature(n: Size, b: RemainingBudget) -> Temperature:
-    return pow(0.97, ((1 - b) * __budget(n)) - 1) * n
+    step = floor(((1 - b) * __budget(n)) - 1) // 10
+    return pow(0.97, step) * n
 
 
 __energy = collisions
