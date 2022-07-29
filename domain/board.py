@@ -1,4 +1,4 @@
-from functools import partial
+from functools import partial, reduce
 from random import choice, randint
 from typing import Generator, Optional, Tuple, cast
 from pyrsistent import pvector
@@ -100,3 +100,8 @@ def stringify(board: Board):
             col_strings.append("Q" if i == row else "_")
         row_strings.append("{}\n".format(" ".join(col_strings)))
     return "".join(row_strings)
+
+
+def rotate_90(board: Board):
+    """Rotate a board 90 degrees clockwise."""
+    return reduce(lambda rotated, j: place_queen(rotated, board[j], len(board) - j - 1), range(len(board)), board)
