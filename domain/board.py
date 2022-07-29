@@ -4,7 +4,7 @@ from typing import Generator, Optional, Tuple, cast
 from pyrsistent import pvector
 from pyrsistent.typing import PVector
 
-from domain.list import flatten, unique, shuffle
+from domain.list import flatten, reverse, unique, shuffle
 
 Size = int
 Row = int
@@ -22,6 +22,10 @@ def to_list(board: Board) -> list[Column]:
 
 def create(n: Size) -> Board:
     return from_list(list(range(n)))
+
+
+def size(board: Board) -> Size:
+    return len(board)
 
 
 def shuffled(n: Size) -> Board:
@@ -102,6 +106,28 @@ def stringify(board: Board):
     return "".join(row_strings)
 
 
-def rotate_90(board: Board):
-    """Rotate a board 90 degrees clockwise."""
-    return reduce(lambda rotated, j: place_queen(rotated, board[j], len(board) - j - 1), range(len(board)), board)
+def __rotate_clockwise(board: Board):
+    n = size(board)
+    return reduce(
+        lambda rotated, j: place_queen(rotated, board[j], n - j - 1),
+        range(len(board)),
+        create(n),
+    )
+
+
+def __identity(board: Board):
+    return board
+
+
+def __flip(board: Board):
+    return from_list(reverse(to_list(board)))
+
+
+def __rotate_counterclockwise(board: Board):
+    return __rotate_clockwise(__flip(board))
+
+
+def transpositions(board: Board) -> Generator[Board, None, None]:
+    transposes = [__identity, __rotate_clockwise, __flip, __rotate_counterclockwise]
+    for transposition in map(lambda t: t(board), transposes):
+        yield transposition

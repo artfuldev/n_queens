@@ -22,3 +22,7 @@ def shuffle(items: list[_T]) -> list[_T]:
     shuffled = deepcopy(items)
     r_shuffle(shuffled)
     return shuffled
+
+
+def reverse(items: list[_T]) -> list[_T]:
+    return list(reversed(items))
