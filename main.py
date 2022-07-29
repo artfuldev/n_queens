@@ -8,7 +8,6 @@ from solutions.back_tracking import back_tracking
 from solutions.genetic import genetic
 from solutions.particle_swarm import particle_swarm
 from solutions.simulated_annealing import anneal
-from itertools import islice
 
 
 __solvers: dict[str, Solve[Size, Board]] = {
