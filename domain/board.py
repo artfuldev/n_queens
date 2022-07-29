@@ -1,10 +1,10 @@
 from functools import partial
-from random import choice, randint, shuffle
+from random import choice, randint
 from typing import Generator, Optional, Tuple, cast
 from pyrsistent import pvector
 from pyrsistent.typing import PVector
 
-from domain.list import flatten, unique
+from domain.list import flatten, unique, shuffle
 
 Size = int
 Row = int
@@ -25,9 +25,7 @@ def create(n: Size) -> Board:
 
 
 def shuffled(n: Size) -> Board:
-    columns = to_list(create(n))
-    shuffle(columns)
-    return from_list(columns)
+    return from_list(shuffle(to_list(create(n))))
 
 
 def place_queen(board: Board, row: Row, column: Column) -> Board:

@@ -1,3 +1,5 @@
+from copy import deepcopy
+from random import shuffle as r_shuffle
 from typing import TypeVar
 
 
@@ -14,3 +16,9 @@ def flatten(list_of_lists: list[list[_T]]) -> list[_T]:
 
 def unique(items: list[_T]) -> list[_T]:
     return list(set(items))
+
+
+def shuffle(items: list[_T]) -> list[_T]:
+    shuffled = deepcopy(items)
+    r_shuffle(shuffled)
+    return shuffled
