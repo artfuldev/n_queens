@@ -22,8 +22,11 @@ from algorithms.simulated_annealing import (
 __first = shuffled
 
 
-def __budget(n: Size) -> Budget:
-    return n * n * 10
+def __budget(steps: int):
+    def budget(n: Size) -> Budget:
+        return n * n * steps
+
+    return budget
 
 
 def __neighbor(n: Size, board: Board) -> Board:
@@ -31,9 +34,12 @@ def __neighbor(n: Size, board: Board) -> Board:
     return swap_rows(board, pair if pair is not None else random_row_pair(n))
 
 
-def __temperature(n: Size, b: RemainingBudget) -> Temperature:
-    step = floor(((1 - b) * __budget(n)) - 1) // 10
-    return pow(0.97, step) * n
+def __temperature(steps: int, alpha: float):
+    def temperature(n: Size, b: RemainingBudget) -> Temperature:
+        step = floor(((1 - b) * __budget(steps)(n)) - 1) // steps
+        return pow(alpha, step) * n
+
+    return temperature
 
 
 __energy = collisions
@@ -57,11 +63,14 @@ def __valid(n: Size, board: Board) -> bool:
     return __energy(n, board) == 0
 
 
+__steps = 10
+__alpha = 0.97
+
 anneal = algorithm(
     __first,
-    __budget,
+    __budget(__steps),
     __neighbor,
-    __temperature,
+    __temperature(__steps, __alpha),
     __energy,
     __terminate,
     __accept,
