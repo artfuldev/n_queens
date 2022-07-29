@@ -2,7 +2,7 @@ from timeit import default_timer
 from algorithms.solve import Solve
 from domain.board import Board, Size
 from domain.problem import Problem
-from domain.report import Report, stringify
+from domain.report import Report, TimedSolution, stringify
 from solutions.brute_force import brute_force
 from solutions.back_tracking import back_tracking
 from solutions.genetic import genetic
@@ -21,11 +21,19 @@ __solvers: dict[str, Solve[Size, Board]] = {
 
 
 def solve(problem: Problem):
-    started = default_timer()
     generator = __solvers[problem.algorithm](problem.size)
-    solutions = list(islice(generator, problem.count))
-    ended = default_timer()
-    return Report(problem.algorithm, problem.size, solutions, ended - started)
+    i = 0
+    solutions: list[TimedSolution] = []
+    while i < problem.count:
+        try:
+            i += 1
+            started = default_timer()
+            solution = next(generator)
+            ended = default_timer()
+            solutions.append(TimedSolution(ended - started, solution))
+        except:
+            break
+    return Report(problem.algorithm, problem.size, solutions)
 
 
 def find_solutions(algorithms: list[str], size: int, count=1, until: int | None = None):
@@ -50,5 +58,5 @@ __algorithms = [
 ]
 
 
-for report in find_solutions(__algorithms, 4, until=200):
+for report in find_solutions(__algorithms, 4, 100, 100):
     print(stringify(report))
