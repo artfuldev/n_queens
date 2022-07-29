@@ -5,13 +5,13 @@ from domain.board import (
     Row,
     Size,
     Board,
-    cache_key,
     collisions,
     random_row_pair,
     random_row_pair_that_may_reduce_collisions,
     shuffled,
     swap_rows,
 )
+from solutions.from_optimizer import from_optimizer
 
 Swap = Optional[Tuple[Row, Row]]
 
@@ -67,18 +67,15 @@ def __output(_: Size, board: Board) -> Board:
     return board
 
 
-def __key(_: Size, board: Board) -> str:
-    return cache_key(board)
-
-
-particle_swarm = algorithm(
-    __first,
-    __velocity,
-    __quality,
-    __terminate,
-    __plan,
-    __next(0.8, 0.5, 1.5),
-    __move,
-    __output,
-    __key,
+particle_swarm = from_optimizer(
+    algorithm(
+        __first,
+        __velocity,
+        __quality,
+        __terminate,
+        __plan,
+        __next(0.8, 0.5, 1.5),
+        __move,
+        __output,
+    )
 )

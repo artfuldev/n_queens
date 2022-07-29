@@ -1,8 +1,7 @@
 from random import uniform
-from typing import TypeVar, Callable, Any
+from typing import TypeVar, Callable
 
-from .solve import Solve
-from .from_optimizer import from_optimizer
+from .optimize import Optimize
 
 System = TypeVar("System")
 Problem = TypeVar("Problem")
@@ -14,10 +13,6 @@ CandidateEnergy = Energy
 Probability = float
 
 
-def __always(problem: Any, system: Any):
-    return True
-
-
 def anneal(
     first: Callable[[Problem], System],
     budget: Callable[[Problem], Budget],
@@ -26,9 +21,7 @@ def anneal(
     energy: Callable[[Problem, System], Energy],
     terminate: Callable[[Problem, System], bool],
     accept: Callable[[Problem, Energy, CandidateEnergy, Temperature], Probability],
-    key: Callable[[Problem, System], str],
-    valid: Callable[[Problem, System], bool] = __always,
-) -> Solve[Problem, System]:
+) -> Optimize[Problem, System]:
     def optimize(problem: Problem) -> System:
         system = first(problem)
         steps = budget(problem)
@@ -46,4 +39,4 @@ def anneal(
                 system = candidate
         return system
 
-    return from_optimizer(key, valid, optimize)
+    return optimize

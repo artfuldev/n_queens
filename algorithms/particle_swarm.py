@@ -3,7 +3,7 @@ from functools import partial
 from typing import Any, Callable, Generic, Iterable, TypeVar
 
 from .from_optimizer import from_optimizer
-from .solve import Problem, Solve
+from .optimize import Problem, Optimize
 
 Solution = TypeVar("Solution")
 Position = TypeVar("Position")
@@ -19,10 +19,6 @@ class Particle(Generic[Position, Velocity]):
 
 def __particle(position: Position, velocity: Velocity) -> Particle[Position, Velocity]:
     return Particle(position, velocity, position)
-
-
-def __always(problem: Any, solution: Any) -> bool:
-    return True
 
 
 @dataclass(frozen=True)
@@ -47,9 +43,7 @@ def particle_swarm(
     next: Callable[[Problem, Velocities[Velocity]], Velocity],
     move: Callable[[Problem, Position, Velocity], Position],
     output: Callable[[Problem, Position], Solution],
-    key: Callable[[Problem, Solution], str],
-    valid: Callable[[Problem, Solution], bool] = __always,
-) -> Solve[Problem, Solution]:
+) -> Optimize[Problem, Solution]:
     def optimize(problem: Problem) -> Solution:
         def best(positions: Iterable[Position]):
             return max(positions, key=partial(quality, problem))
@@ -73,4 +67,4 @@ def particle_swarm(
                 global_best = best((particle.best, global_best))
         return output(problem, global_best)
 
-    return from_optimizer(key, valid, optimize)
+    return optimize

@@ -2,8 +2,7 @@ from dataclasses import dataclass
 from random import choices
 from typing import Callable, Generic, Tuple, TypeVar, cast, Any
 
-from .from_optimizer import from_optimizer
-from .solve import Solve
+from .optimize import Optimize
 
 
 _C = TypeVar("_C")
@@ -27,10 +26,6 @@ def __select(_: Any, population: list[Individual[_T]]) -> Tuple[_T, _T]:
     return cast(Tuple[_T, _T], selected)
 
 
-def __always(problem: Any, solution: Any) -> bool:
-    return True
-
-
 def genetic(
     populate: Callable[[_P], list[_C]],
     fitness: Callable[[_P, _C], float],
@@ -38,10 +33,8 @@ def genetic(
     mutate: Callable[[_P, _C], _C],
     terminate: Callable[[_P, list[Individual[_C]], int], bool],
     output: Callable[[_P, Individual[_C]], _S],
-    key: Callable[[_P, _S], str],
-    valid: Callable[[_P, _S], bool] = __always,
     select: Callable[[_P, list[Individual[_C]]], Tuple[_C, _C]] = __select,
-) -> Solve[_P, _S]:
+) -> Optimize[_P, _S]:
     def optimize(problem: _P) -> _S:
         population = populate(problem)
         generation = 1
@@ -64,4 +57,4 @@ def genetic(
             gene_pool = sorted(next_gene_pool, key=lambda i: i.fitness, reverse=True)
         return output(problem, gene_pool[0])
 
-    return from_optimizer(key, valid, optimize)
+    return optimize

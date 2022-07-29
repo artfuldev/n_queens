@@ -1,9 +1,9 @@
 from random import choice, random
 
+
 from domain.board import (
     Board,
     Size,
-    cache_key,
     collisions,
     from_list,
     random_row_pair_that_may_reduce_collisions,
@@ -11,6 +11,9 @@ from domain.board import (
     swap_rows,
 )
 from algorithms.genetic import Individual, genetic as algorithm
+
+
+from .from_optimizer import from_optimizer
 
 
 def __populate(n: Size) -> list[Board]:
@@ -57,25 +60,17 @@ def __terminate(n: Size, population: list[Individual[Board]], generation: int) -
     )
 
 
-def __valid(n: Size, board: Board) -> bool:
-    return __fitness(n, board) == 100
-
-
 def __output(n: Size, individual: Individual[Board]) -> Board:
     return individual.candidate
 
 
-def __key(n: Size, board: Board) -> str:
-    return cache_key(board)
-
-
-genetic = algorithm(
-    __populate,
-    __fitness,
-    __crossover,
-    __mutate,
-    __terminate,
-    __output,
-    __key,
-    __valid,
+genetic = from_optimizer(
+    algorithm(
+        __populate,
+        __fitness,
+        __crossover,
+        __mutate,
+        __terminate,
+        __output,
+    )
 )

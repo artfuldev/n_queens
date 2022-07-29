@@ -1,22 +1,9 @@
-from typing import Callable
+from .optimize import Problem, Solution, Optimize
+from .solve import Solve
 
-from .solve import Problem, Solution, Solve
 
-
-def from_optimizer(
-    key: Callable[[Problem, Solution], str],
-    valid: Callable[[Problem, Solution], bool],
-    optimize: Callable[[Problem], Solution],
-) -> Solve[Problem, Solution]:
+def from_optimizer(optimize: Optimize[Problem, Solution]) -> Solve[Problem, Solution]:
     def solve(problem: Problem):
-        cached_keys: set[str] = set()
-        while True:
-            solution = optimize(problem)
-            if not valid(problem, solution):
-                continue
-            solution_key = key(problem, solution)
-            if solution_key not in cached_keys:
-                cached_keys.add(solution_key)
-                yield solution
+        yield optimize(problem)
 
     return solve

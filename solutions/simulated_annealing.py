@@ -2,7 +2,6 @@ from math import exp, floor
 from domain.board import (
     Board,
     Size,
-    cache_key,
     collisions,
     random_row_pair,
     random_row_pair_that_may_reduce_collisions,
@@ -18,6 +17,7 @@ from algorithms.simulated_annealing import (
     Temperature,
     anneal as algorithm,
 )
+from solutions.from_optimizer import from_optimizer
 
 __first = shuffled
 
@@ -55,25 +55,17 @@ def __accept(
     return 1 if e_dash < e else exp(-(e_dash - e) / t)
 
 
-def __key(n: Size, board: Board) -> str:
-    return cache_key(board)
-
-
-def __valid(n: Size, board: Board) -> bool:
-    return __energy(n, board) == 0
-
-
 __steps = 10
 __alpha = 0.97
 
-anneal = algorithm(
-    __first,
-    __budget(__steps),
-    __neighbor,
-    __temperature(__steps, __alpha),
-    __energy,
-    __terminate,
-    __accept,
-    __key,
-    __valid,
+anneal = from_optimizer(
+    algorithm(
+        __first,
+        __budget(__steps),
+        __neighbor,
+        __temperature(__steps, __alpha),
+        __energy,
+        __terminate,
+        __accept,
+    )
 )
