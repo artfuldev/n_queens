@@ -25,4 +25,5 @@ def from_optimizer(optimize: Optimize[Size, Board]) -> Solve[Size, Board]:
         transpose(transpositions),
         distinct(__key),
     ]
-    return reduce(lambda g, t: t(g), transformers, from_optimize(optimize))
+    solve = from_optimize(optimize)
+    return reduce(lambda solve, transform: transform(solve), transformers, solve)
