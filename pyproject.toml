@@ -7,6 +7,7 @@ authors = ["swhustla <fdkelly@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.10"
 pyrsistent = "^0.18.1"
+numpy = "^1.23.1"
 
 [tool.poetry.dev-dependencies]
 black = {version = "^22.6.0", allow-prereleases = true}
