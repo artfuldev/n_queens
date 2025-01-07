@@ -1,17 +1,17 @@
-[tool.poetry]
+[project]
 name = "n_queens"
 version = "0.1.0"
 description = "Solve the n queens problem"
-authors = ["swhustla <fdkelly@gmail.com>"]
+authors = [{ name = "swhustla", email = "fdkelly@gmail.com" }, { name = "artfuldev", email = "hello@artful.dev" }]
+requires-python = "~=3.13"
+dependencies = [
+    "pyrsistent>=0.18.1,<0.19",
+    "numpy>=1.23.1,<2",
+]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-pyrsistent = "^0.18.1"
-numpy = "^1.23.1"
-
-[tool.poetry.dev-dependencies]
-black = {version = "^22.6.0", allow-prereleases = true}
+[dependency-groups]
+dev = ["black>=22.6.0,<23"]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
